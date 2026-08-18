@@ -1,0 +1,1909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroScan AI | Cyber-Radiology Diagnostic Console</title>
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            /* Dark Cyber-Radiology Color Tokens */
+            --bg-void: #03060D;
+            --bg-deep: #060B16;
+            --bg-panel: rgba(13, 22, 40, 0.75);
+            --bg-panel-solid: #0E172A;
+            --bg-card: rgba(20, 32, 57, 0.6);
+
+            --border-glow: rgba(0, 229, 255, 0.25);
+            --border-subtle: rgba(56, 189, 248, 0.12);
+            --border-active: #00E5FF;
+
+            /* Luminous Accents */
+            --cyan-electric: #00E5FF;
+            --cyan-bright: #38BDF8;
+            --cyan-dim: #0284C7;
+            --indigo-bright: #6366F1;
+            --indigo-light: #818CF8;
+            --purple-accent: #A855F7;
+
+            /* Severity & Status Colors */
+            --notumor-color: #10B981;
+            --notumor-glow: rgba(16, 185, 129, 0.3);
+            --glioma-color: #F43F5E;
+            --glioma-glow: rgba(244, 63, 94, 0.35);
+            --meningioma-color: #F59E0B;
+            --meningioma-glow: rgba(245, 158, 11, 0.35);
+            --pituitary-color: #EC4899;
+            --pituitary-glow: rgba(236, 72, 153, 0.35);
+
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --text-cyber: #38BDF8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(0, 229, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 85% 75%, rgba(99, 102, 241, 0.06) 0%, transparent 45%),
+                linear-gradient(180deg, var(--bg-void) 0%, var(--bg-deep) 100%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem;
+        }
+
+        .dashboard-container {
+            max-width: 1380px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Glassmorphic Panel Utility */
+        .glass-panel {
+            background: var(--bg-panel);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 18px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-panel:hover {
+            border-color: var(--border-glow);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 229, 255, 0.08);
+        }
+
+        /* ---------------------------------------------------- */
+        /* TOP COMMAND HEADER */
+        /* ---------------------------------------------------- */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+
+        .brand-icon-box {
+            position: relative;
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(99, 102, 241, 0.2));
+            border: 1.5px solid var(--cyan-electric);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            color: var(--cyan-electric);
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.35);
+        }
+
+        .brand-icon-box::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 18px;
+            border: 1px dashed var(--cyan-bright);
+            opacity: 0.4;
+            animation: rotateGlow 20s linear infinite;
+        }
+
+        @keyframes rotateGlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .brand-text h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #FFFFFF 30%, var(--cyan-bright) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .brand-text h1 span.tag {
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            background: rgba(0, 229, 255, 0.12);
+            color: var(--cyan-electric);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            -webkit-text-fill-color: initial;
+            font-weight: 700;
+        }
+
+        .brand-text p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.15rem;
+        }
+
+        .header-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(14, 23, 42, 0.8);
+            border: 1px solid var(--border-subtle);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--notumor-color);
+            box-shadow: 0 0 10px var(--notumor-color);
+            animation: pulseDot 2s infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        .accuracy-pill {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(0, 229, 255, 0.15));
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--notumor-color);
+            font-weight: 700;
+        }
+
+        /* ---------------------------------------------------- */
+        /* MAIN DASHBOARD LAYOUT GRID */
+        /* ---------------------------------------------------- */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1100px) {
+            .grid-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ---------------------------------------------------- */
+        /* LEFT CONTROLS & UPLOAD PANEL */
+        /* ---------------------------------------------------- */
+        .sidebar-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            padding: 1.5rem;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .panel-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--text-primary);
+        }
+
+        .panel-title i {
+            color: var(--cyan-electric);
+        }
+
+        /* Drop Zone */
+        .dropzone-area {
+            position: relative;
+            border: 2px dashed rgba(56, 189, 248, 0.3);
+            border-radius: 14px;
+            padding: 2.2rem 1.2rem;
+            text-align: center;
+            background: rgba(6, 11, 22, 0.6);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .dropzone-area:hover, .dropzone-area.dragover {
+            border-color: var(--cyan-electric);
+            background: rgba(0, 229, 255, 0.04);
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.15);
+        }
+
+        .dropzone-icon {
+            font-size: 2.4rem;
+            color: var(--cyan-bright);
+            margin-bottom: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .dropzone-area:hover .dropzone-icon {
+            transform: translateY(-4px) scale(1.08);
+            color: var(--cyan-electric);
+        }
+
+        .dropzone-text h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: var(--text-primary);
+        }
+
+        .dropzone-text p {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .browse-btn {
+            display: inline-block;
+            margin-top: 0.9rem;
+            padding: 0.45rem 1rem;
+            background: rgba(0, 229, 255, 0.1);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            color: var(--cyan-electric);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .dropzone-area:hover .browse-btn {
+            background: var(--cyan-electric);
+            color: #03060D;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+        }
+
+        /* Scanning beam visual effect on drag or loading */
+        .scan-beam {
+            position: absolute;
+            top: -100%;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(180deg, transparent, rgba(0, 229, 255, 0.25), transparent);
+            pointer-events: none;
+            display: none;
+        }
+
+        .scanning .scan-beam {
+            display: block;
+            animation: scanAnim 1.6s ease-in-out infinite;
+        }
+
+        @keyframes scanAnim {
+            0% { top: -40%; }
+            100% { top: 120%; }
+        }
+
+        /* 1-Click Sample Selector */
+        .samples-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .samples-title {
+            font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sample-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+        }
+
+        .sample-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.65rem 0.85rem;
+            background: rgba(14, 23, 42, 0.7);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+
+        .sample-btn:hover {
+            border-color: var(--cyan-electric);
+            color: var(--text-primary);
+            background: rgba(0, 229, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .sample-btn i {
+            font-size: 0.9rem;
+        }
+
+        .sample-btn[data-cls="glioma"] i { color: var(--glioma-color); }
+        .sample-btn[data-cls="meningioma"] i { color: var(--meningioma-color); }
+        .sample-btn[data-cls="pituitary"] i { color: var(--pituitary-color); }
+        .sample-btn[data-cls="notumor"] i { color: var(--notumor-color); }
+
+        /* Telemetry Tech Specs Card */
+        .specs-card {
+            background: rgba(6, 11, 22, 0.7);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+        }
+
+        .spec-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--text-muted);
+        }
+
+        .spec-item span.val {
+            color: var(--cyan-bright);
+            font-weight: 600;
+        }
+
+        /* ---------------------------------------------------- */
+        /* RIGHT MAIN DISPLAY AREA */
+        /* ---------------------------------------------------- */
+        .main-display-area {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Viewport Card */
+        .viewport-panel {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .viewport-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .mode-switch-group {
+            display: flex;
+            align-items: center;
+            background: rgba(6, 11, 22, 0.8);
+            border: 1px solid var(--border-subtle);
+            padding: 3px;
+            border-radius: 10px;
+        }
+
+        .mode-btn {
+            padding: 0.4rem 0.9rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .mode-btn.active {
+            background: var(--cyan-electric);
+            color: #03060D;
+            box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+        }
+
+        /* VIEWPORT CONTAINERS */
+        /* Mode A: Side by Side */
+        .view-side-by-side {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .view-side-by-side {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .mri-frame {
+            position: relative;
+            background: #000000;
+            border: 1.5px solid var(--border-subtle);
+            border-radius: 14px;
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+        }
+
+        .mri-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .frame-label {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(6, 11, 22, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-subtle);
+            padding: 0.35rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: var(--cyan-electric);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            z-index: 10;
+        }
+
+        .magnifier-lens {
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            border: 2px solid var(--cyan-electric);
+            border-radius: 50%;
+            cursor: crosshair;
+            pointer-events: none;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.5), inset 0 0 15px rgba(0, 0, 0, 0.5);
+            background-repeat: no-repeat;
+            display: none;
+            z-index: 20;
+        }
+
+        /* Mode B: Interactive Crossfade Slider */
+        .view-slider-mode {
+            position: relative;
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            aspect-ratio: 1 / 1;
+            border: 1.5px solid var(--border-subtle);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.8);
+            background: #000;
+            display: none;
+            --split-pos: 50%;
+        }
+
+        .view-slider-mode .slider-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .view-slider-mode .top-img {
+            clip-path: inset(0 calc(100% - var(--split-pos)) 0 0);
+            z-index: 5;
+        }
+
+        .slider-divider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: var(--split-pos);
+            width: 3px;
+            background: var(--cyan-electric);
+            transform: translateX(-50%);
+            pointer-events: none;
+            z-index: 15;
+            box-shadow: 0 0 15px var(--cyan-electric);
+        }
+
+        .slider-handle-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 42px;
+            height: 42px;
+            background: var(--cyan-electric);
+            color: #03060D;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.8);
+        }
+
+        .slider-range-input {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: ew-resize;
+            z-index: 25;
+            margin: 0;
+            padding: 0;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        /* ---------------------------------------------------- */
+        /* DIAGNOSTIC RESULTS & TELEMETRY SECTION */
+        /* ---------------------------------------------------- */
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Primary Diagnosis Card */
+        .diagnosis-card {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1.2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .diagnosis-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .diagnosis-badge-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .diagnosis-icon-ring {
+            width: 58px;
+            height: 58px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--notumor-color);
+            border: 1.5px solid var(--notumor-color);
+            box-shadow: 0 0 25px var(--notumor-glow);
+            transition: all 0.3s ease;
+        }
+
+        .diagnosis-text h3 {
+            font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .diagnosis-text h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-top: 0.15rem;
+        }
+
+        .confidence-box {
+            text-align: right;
+        }
+
+        .confidence-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--cyan-electric);
+            line-height: 1;
+        }
+
+        .confidence-label {
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+
+        .clinical-recommendation {
+            background: rgba(6, 11, 22, 0.6);
+            border: 1px solid var(--border-subtle);
+            border-left: 4px solid var(--cyan-electric);
+            border-radius: 10px;
+            padding: 0.9rem 1.1rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .clinical-recommendation strong {
+            color: var(--text-primary);
+        }
+
+        /* Class Probabilities Bar Chart */
+        .prob-card {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .prob-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+
+        .prob-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .prob-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .prob-info .cls-name {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: capitalize;
+        }
+
+        .prob-info .pct {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--cyan-bright);
+        }
+
+        .bar-track {
+            height: 10px;
+            background: rgba(6, 11, 22, 0.8);
+            border-radius: 5px;
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 5px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .bar-fill[data-cls="glioma"] { background: linear-gradient(90deg, #F43F5E, #FB7185); }
+        .bar-fill[data-cls="meningioma"] { background: linear-gradient(90deg, #F59E0B, #FBBF24); }
+        .bar-fill[data-cls="pituitary"] { background: linear-gradient(90deg, #EC4899, #F472B6); }
+        .bar-fill[data-cls="notumor"] { background: linear-gradient(90deg, #10B981, #34D399); }
+
+        /* Action Buttons */
+        .action-bar {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding-top: 0.5rem;
+        }
+
+        .btn-action {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.75rem 1.4rem;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25 ease;
+            border: none;
+        }
+
+        .btn-secondary {
+            background: rgba(14, 23, 42, 0.8);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--cyan-bright);
+            color: var(--text-primary);
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--cyan-electric), var(--indigo-bright));
+            color: #03060D;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.6);
+        }
+
+        /* ---------------------------------------------------- */
+        /* CLINICAL REPORT PRINT MODAL */
+        /* ---------------------------------------------------- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(3, 6, 13, 0.88);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* ---------------------------------------------------- */
+        /* PROFESSIONAL CLINICAL PDF REPORT STYLES */
+        /* ---------------------------------------------------- */
+        .report-card {
+            background: #0B1220;
+            border: 1.5px solid var(--cyan-electric);
+            border-radius: 18px;
+            max-width: 850px;
+            width: 100%;
+            max-height: 92vh;
+            overflow-y: auto;
+            padding: 2.2rem;
+            color: var(--text-primary);
+            box-shadow: 0 20px 60px rgba(0, 229, 255, 0.25);
+            position: relative;
+        }
+
+        .pdf-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid var(--cyan-electric);
+            padding-bottom: 1.2rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .pdf-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .pdf-logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--cyan-electric), var(--indigo-bright));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #03060D;
+        }
+
+        .pdf-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 900;
+            color: var(--cyan-electric);
+            letter-spacing: 0.5px;
+        }
+
+        .pdf-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .pdf-meta-table {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            text-align: right;
+            line-height: 1.5;
+        }
+
+        .pdf-meta-table strong {
+            color: var(--text-primary);
+        }
+
+        .pdf-finding-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 229, 255, 0.08);
+            border: 1px solid var(--cyan-electric);
+            border-radius: 14px;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .finding-label {
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .finding-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 900;
+            margin: 0.2rem 0;
+        }
+
+        .finding-severity {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            background: rgba(244, 63, 94, 0.15);
+            color: var(--glioma-color);
+            border: 1px solid var(--glioma-color);
+        }
+
+        .finding-conf {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--cyan-electric);
+            line-height: 1;
+            margin-top: 0.2rem;
+        }
+
+        .finding-subtext {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .pdf-section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--cyan-bright);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin: 1.4rem 0 0.8rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pdf-images-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+
+        .pdf-img-card {
+            background: rgba(6, 11, 22, 0.8);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 0.8rem;
+            text-align: center;
+        }
+
+        .pdf-img-header {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 0.6rem;
+        }
+
+        .pdf-img-container {
+            background: #000000;
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pdf-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .pdf-img-caption {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        .pdf-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+            margin-top: 0.5rem;
+        }
+
+        .pdf-table th, .pdf-table td {
+            padding: 0.6rem 0.9rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .pdf-table th {
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            background: rgba(6, 11, 22, 0.6);
+        }
+
+        .pdf-table td.prob-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: var(--cyan-bright);
+        }
+
+        .pdf-specs-box {
+            background: rgba(6, 11, 22, 0.6);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 0.9rem 1.1rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .pdf-notes-box {
+            margin-top: 0.5rem;
+        }
+
+        .pdf-notes-input {
+            width: 100%;
+            min-height: 80px;
+            background: rgba(6, 11, 22, 0.6);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 0.8rem;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            resize: vertical;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .pdf-notes-input:focus {
+            outline: none;
+            border-color: var(--cyan-electric);
+        }
+
+        .pdf-signature-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+        }
+
+        .sig-box {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .sig-line {
+            height: 1px;
+            background: var(--text-muted);
+            width: 100%;
+            margin-top: 1.8rem;
+        }
+
+        .sig-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .pdf-footer {
+            margin-top: 1.8rem;
+            padding-top: 0.9rem;
+            border-top: 1px solid var(--border-subtle);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .pdf-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .close-modal-btn {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+
+        .close-modal-btn:hover {
+            color: var(--cyan-electric);
+        }
+
+        /* PRINT STYLES FOR CLEAN PDF EXPORT */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 1.5cm;
+            }
+            body {
+                background: #FFFFFF !important;
+                color: #0F172A !important;
+                padding: 0 !important;
+            }
+            .dashboard-container, .no-print {
+                display: none !important;
+            }
+            .modal-overlay {
+                position: static !important;
+                background: transparent !important;
+                backdrop-filter: none !important;
+                opacity: 1 !important;
+                pointer-events: auto !important;
+                padding: 0 !important;
+            }
+            .report-card {
+                background: #FFFFFF !important;
+                color: #0F172A !important;
+                border: 1px solid #CBD5E1 !important;
+                box-shadow: none !important;
+                max-width: 100% !important;
+                max-height: none !important;
+                overflow: visible !important;
+                padding: 0 !important;
+                border-radius: 0 !important;
+            }
+            .pdf-title {
+                color: #0284C7 !important;
+            }
+            .pdf-subtitle, .pdf-meta-table, .pdf-img-caption, .finding-label, .pdf-footer, .sig-label, .pdf-img-header {
+                color: #475569 !important;
+            }
+            .pdf-meta-table strong, .pdf-img-card, .pdf-specs-box, .pdf-notes-input {
+                color: #0F172A !important;
+            }
+            .pdf-finding-banner {
+                background: #F0F9FF !important;
+                border-color: #0284C7 !important;
+            }
+            .finding-title, .finding-conf {
+                color: #0F172A !important;
+            }
+            .pdf-img-card, .pdf-specs-box, .pdf-notes-input {
+                background: #F8FAFC !important;
+                border-color: #E2E8F0 !important;
+            }
+            .pdf-table th {
+                background: #F1F5F9 !important;
+                color: #334155 !important;
+            }
+            .pdf-table td {
+                border-color: #E2E8F0 !important;
+                color: #0F172A !important;
+            }
+            .pdf-table td.prob-val {
+                color: #0284C7 !important;
+            }
+            .pdf-section-title {
+                color: #0284C7 !important;
+            }
+            .sig-line {
+                background: #64748B !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <!-- TOP COMMAND HEADER -->
+        <header class="glass-panel">
+            <div class="brand-section">
+                <div class="brand-icon-box">
+                    <i class="fa-solid font-awesome fa-brain"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>NEUROSCAN AI <span class="tag">XAI v2.4</span></h1>
+                    <p>Hybrid Deep Learning MRI Diagnostic Console</p>
+                </div>
+            </div>
+
+            <div class="header-meta">
+                <div class="meta-badge">
+                    <div class="status-dot"></div>
+                    <span>SYSTEM ONLINE</span>
+                </div>
+                <div class="meta-badge accuracy-pill">
+                    <i class="fa-solid fa-bullseye"></i>
+                    <span>90.47% TEST ACCURACY</span>
+                </div>
+                <div class="meta-badge">
+                    <i class="fa-solid fa-microchip" style="color: var(--cyan-electric);"></i>
+                    <span>PDSCNN + ViT + RRELM</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN LAYOUT GRID -->
+        <div class="grid-layout">
+            <!-- SIDEBAR CONTROLS & UPLOAD -->
+            <aside class="sidebar-panel glass-panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i class="fa-solid fa-upload"></i>
+                        <span>Scan Acquisition</span>
+                    </div>
+                </div>
+
+                <!-- Drag and Drop Zone -->
+                <div class="dropzone-area" id="dropzone">
+                    <div class="scan-beam"></div>
+                    <i class="fa-solid fa-cloud-arrow-up dropzone-icon"></i>
+                    <div class="dropzone-text">
+                        <h4>Drop Brain MRI File Here</h4>
+                        <p>Supports PNG, JPG, JPEG, DICOM slices</p>
+                    </div>
+                    <span class="browse-btn"><i class="fa-solid fa-folder-open"></i> Browse File</span>
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                </div>
+
+                <!-- 1-Click Preset Test Samples -->
+                <div class="samples-section">
+                    <div class="samples-title">
+                        <span><i class="fa-solid fa-flask"></i> Quick Test Scans</span>
+                        <span style="font-size: 0.7rem; opacity: 0.7;">Test Dataset</span>
+                    </div>
+                    <div class="sample-grid">
+                        <button class="sample-btn" data-cls="glioma">
+                            <i class="fa-solid fa-circle-dot"></i> Glioma
+                        </button>
+                        <button class="sample-btn" data-cls="meningioma">
+                            <i class="fa-solid fa-circle-dot"></i> Meningioma
+                        </button>
+                        <button class="sample-btn" data-cls="pituitary">
+                            <i class="fa-solid fa-circle-dot"></i> Pituitary
+                        </button>
+                        <button class="sample-btn" data-cls="notumor">
+                            <i class="fa-solid fa-shield-halved"></i> No Tumor
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Technical Architecture Specs -->
+                <div class="specs-card">
+                    <div class="spec-item">
+                        <span>Preprocessing:</span>
+                        <span class="val">CLAHE Contrast</span>
+                    </div>
+                    <div class="spec-item">
+                        <span>CNN Vector:</span>
+                        <span class="val">256-dim PDSCNN</span>
+                    </div>
+                    <div class="spec-item">
+                        <span>Transformer:</span>
+                        <span class="val">128-dim ViT Patch</span>
+                    </div>
+                    <div class="spec-item">
+                        <span>Classifier:</span>
+                        <span class="val">RRELM Ridge</span>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- MAIN DISPLAY AREA -->
+            <main class="main-display-area">
+                <!-- VIEWPORT CARD -->
+                <div class="viewport-panel glass-panel">
+                    <div class="viewport-header">
+                        <div class="panel-title">
+                            <i class="fa-solid fa-eye"></i>
+                            <span>Grad-CAM Visual Interpretability Viewport</span>
+                        </div>
+                        <div class="mode-switch-group">
+                            <button class="mode-btn active" id="btnModeSide">
+                                <i class="fa-solid fa-columns"></i> Side-by-Side
+                            </button>
+                            <button class="mode-btn" id="btnModeSlider">
+                                <i class="fa-solid fa-sliders"></i> Crossfade Reveal
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- MODE A: SIDE BY SIDE -->
+                    <div class="view-side-by-side" id="sideBySideContainer">
+                        <div class="mri-frame" id="frameOriginal">
+                            <div class="frame-label"><i class="fa-solid fa-sliders"></i> CLAHE MRI SCAN</div>
+                            <img id="imgOriginal" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><rect width='100%' height='100%' fill='%23050811'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%2338BDF8' font-family='sans-serif' font-size='16'>Upload or Select MRI Scan</text></svg>" alt="Original MRI">
+                            <div class="magnifier-lens" id="magnifierLens"></div>
+                        </div>
+
+                        <div class="mri-frame" id="frameGradcam">
+                            <div class="frame-label"><i class="fa-solid fa-fire-flame-curved"></i> GRAD-CAM ATTENTION</div>
+                            <img id="imgGradcam" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><rect width='100%' height='100%' fill='%23050811'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%2364748B' font-family='sans-serif' font-size='16'>Awaiting Heatmap Generation</text></svg>" alt="Grad-CAM Heatmap">
+                        </div>
+                    </div>
+
+                    <!-- MODE B: CROSSFADE SLIDER -->
+                    <div class="view-slider-mode" id="sliderContainer">
+                        <img id="sliderGradcamImg" class="slider-img base-img" src="" alt="GradCAM Heatmap">
+                        <img id="sliderOriginalImg" class="slider-img top-img" src="" alt="Original MRI">
+                        <div class="slider-divider" id="sliderDivider">
+                            <div class="slider-handle-button">
+                                <i class="fa-solid fa-arrows-left-right"></i>
+                            </div>
+                        </div>
+                        <input type="range" min="0" max="100" value="50" class="slider-range-input" id="sliderRange">
+                    </div>
+                </div>
+
+                <!-- DIAGNOSTIC RESULTS & PROBABILITIES -->
+                <div class="results-grid">
+                    <!-- DIAGNOSIS CARD -->
+                    <div class="diagnosis-card glass-panel">
+                        <div class="diagnosis-header">
+                            <div class="diagnosis-badge-container">
+                                <div class="diagnosis-icon-ring" id="diagIconRing">
+                                    <i class="fa-solid fa-pulse" id="diagIcon"></i>
+                                </div>
+                                <div class="diagnosis-text">
+                                    <h3>Predicted Diagnostic Output</h3>
+                                    <h2 id="diagTitle">Awaiting Image</h2>
+                                </div>
+                            </div>
+                            <div class="confidence-box">
+                                <div class="confidence-val" id="diagConf">--%</div>
+                                <div class="confidence-label">MODEL CONFIDENCE</div>
+                            </div>
+                        </div>
+
+                        <div class="clinical-recommendation" id="clinicalTip">
+                            <strong>System Instructions:</strong> Upload a brain MRI scan or choose a test sample from the left toolbar to initiate hybrid CNN-ViT inference and Grad-CAM lesion localization.
+                        </div>
+                    </div>
+
+                    <!-- PROBABILITIES CARD -->
+                    <div class="prob-card glass-panel">
+                        <div class="panel-title" style="font-size: 0.95rem;">
+                            <i class="fa-solid fa-chart-column"></i>
+                            <span>Multi-Class Probability Distribution</span>
+                        </div>
+                        <div class="prob-list">
+                            <div class="prob-row">
+                                <div class="prob-info">
+                                    <span class="cls-name"><i class="fa-solid fa-circle-stop" style="color: var(--glioma-color)"></i> Glioma Tumor</span>
+                                    <span class="pct" id="pct-glioma">0.0%</span>
+                                </div>
+                                <div class="bar-track">
+                                    <div class="bar-fill" data-cls="glioma" id="bar-glioma"></div>
+                                </div>
+                            </div>
+
+                            <div class="prob-row">
+                                <div class="prob-info">
+                                    <span class="cls-name"><i class="fa-solid fa-circle-stop" style="color: var(--meningioma-color)"></i> Meningioma Tumor</span>
+                                    <span class="pct" id="pct-meningioma">0.0%</span>
+                                </div>
+                                <div class="bar-track">
+                                    <div class="bar-fill" data-cls="meningioma" id="bar-meningioma"></div>
+                                </div>
+                            </div>
+
+                            <div class="prob-row">
+                                <div class="prob-info">
+                                    <span class="cls-name"><i class="fa-solid fa-circle-stop" style="color: var(--pituitary-color)"></i> Pituitary Tumor</span>
+                                    <span class="pct" id="pct-pituitary">0.0%</span>
+                                </div>
+                                <div class="bar-track">
+                                    <div class="bar-fill" data-cls="pituitary" id="bar-pituitary"></div>
+                                </div>
+                            </div>
+
+                            <div class="prob-row">
+                                <div class="prob-info">
+                                    <span class="cls-name"><i class="fa-solid fa-circle-stop" style="color: var(--notumor-color)"></i> Healthy / No Tumor</span>
+                                    <span class="pct" id="pct-notumor">0.0%</span>
+                                </div>
+                                <div class="bar-track">
+                                    <div class="bar-fill" data-cls="notumor" id="bar-notumor"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACTION BUTTONS -->
+                <div class="action-bar">
+                    <button class="btn-action btn-secondary" id="btnReset">
+                        <i class="fa-solid fa-rotate-left"></i> Reset Console
+                    </button>
+                    <button class="btn-action btn-primary" id="btnPrintReport">
+                        <i class="fa-solid fa-file-medical"></i> Generate Diagnostic Report
+                    </button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- CLINICAL REPORT PRINT MODAL -->
+    <div class="modal-overlay" id="reportModal">
+        <div class="report-card">
+            <button class="close-modal-btn no-print" id="btnCloseModal"><i class="fa-solid fa-xmark"></i></button>
+
+            <!-- INSTITUTIONAL HEADER -->
+            <div class="pdf-header">
+                <div class="pdf-brand">
+                    <div class="pdf-logo-icon"><i class="fa-solid fa-brain"></i></div>
+                    <div>
+                        <h1 class="pdf-title">NEUROSCAN AI NEURO-ONCOLOGY CENTER</h1>
+                        <p class="pdf-subtitle">Computer-Aided Diagnostic (CAD) & Explainable AI MRI Evaluation Report</p>
+                    </div>
+                </div>
+                <div class="pdf-meta-table">
+                    <div><strong>Patient ID:</strong> <span id="reportPatientId">PT-2026-8492</span></div>
+                    <div><strong>Date & Time:</strong> <span id="reportDate">Aug 08, 2026</span></div>
+                    <div><strong>Accession #:</strong> <span id="reportRef">#NS-8492</span></div>
+                    <div><strong>Modality:</strong> Axial T1w Contrast MRI</div>
+                </div>
+            </div>
+
+            <!-- PRIMARY DIAGNOSTIC FINDING BANNER -->
+            <div class="pdf-finding-banner" id="reportFindingBanner">
+                <div class="finding-left">
+                    <span class="finding-label">Primary Diagnostic Finding</span>
+                    <h2 class="finding-title" id="reportClass">GLIOMA TUMOR DETECTED</h2>
+                    <span class="finding-severity" id="reportSeverityTag">HIGH RISK - NEURO-SURGICAL EVALUATION RECOMMENDED</span>
+                </div>
+                <div class="finding-right" style="text-align: right;">
+                    <span class="finding-label">Inference Confidence</span>
+                    <div class="finding-conf" id="reportConf">96.4%</div>
+                    <span class="finding-subtext">Hybrid CNN-ViT Model Output</span>
+                </div>
+            </div>
+
+            <!-- RADIOLOGICAL IMAGERY & GRAD-CAM HEATMAP -->
+            <div class="pdf-section-title"><i class="fa-solid fa-images"></i> Radiological Imagery & Lesion Localization</div>
+            <div class="pdf-images-grid">
+                <div class="pdf-img-card">
+                    <div class="pdf-img-header">CLAHE Contrast-Enhanced Scan</div>
+                    <div class="pdf-img-container">
+                        <img id="reportOrigImg" src="" alt="CLAHE MRI Scan">
+                    </div>
+                    <div class="pdf-img-caption">Grayscale input slice after CLAHE histogram equalization</div>
+                </div>
+                <div class="pdf-img-card">
+                    <div class="pdf-img-header">Grad-CAM XAI Heatmap Localization</div>
+                    <div class="pdf-img-container">
+                        <img id="reportGradcamImg" src="" alt="Grad-CAM Heatmap">
+                    </div>
+                    <div class="pdf-img-caption">Hyper-intense activation zones driving deep classifier prediction</div>
+                </div>
+            </div>
+
+            <!-- MULTI-CLASS PROBABILITY DISTRIBUTION TABLE -->
+            <div class="pdf-section-title"><i class="fa-solid fa-table-list"></i> Multi-Class Probability Telemetry</div>
+            <table class="pdf-table">
+                <thead>
+                    <tr>
+                        <th>Neoplasm Category</th>
+                        <th>Probability</th>
+                        <th>Distribution Meter</th>
+                        <th>Risk Assessment</th>
+                    </tr>
+                </thead>
+                <tbody id="reportProbTableBody">
+                    <!-- Populated via JS -->
+                </tbody>
+            </table>
+
+            <!-- DEEP LEARNING MODEL SPECIFICATIONS -->
+            <div class="pdf-section-title"><i class="fa-solid fa-microchip"></i> System Architecture & Validation Metrics</div>
+            <div class="pdf-specs-box">
+                <p><strong>Architecture Topology:</strong> Integrated 4-Layer Parallel Depthwise Separable CNN (PDSCNN 256-dim feature vector) fused with Vision Transformer (ViT 128-dim patch embeddings) and Regularized Ridge Extreme Learning Machine (RRELM) final classifier.</p>
+                <p style="margin-top: 4px;"><strong>Validation Benchmarks:</strong> Tested on 1,994 unseen test MRI scans. Overall Test Accuracy: <strong>90.47%</strong> | Non-Tumor Healthy Recall: <strong>99.41%</strong>.</p>
+            </div>
+
+            <!-- RADIOLOGIST NOTES & SIGNATURE BLOCK -->
+            <div class="pdf-section-title"><i class="fa-solid fa-user-doctor"></i> Attending Radiologist Evaluation & Notes</div>
+            <div class="pdf-notes-box">
+                <textarea id="reportDoctorNotes" class="pdf-notes-input" placeholder="Click here to type additional clinical notes, differential diagnosis observations, or follow-up recommendations before printing..."></textarea>
+            </div>
+
+            <div class="pdf-signature-row">
+                <div class="sig-box">
+                    <div class="sig-line"></div>
+                    <div class="sig-label">Evaluating Neuroradiologist / Physician Signature</div>
+                </div>
+                <div class="sig-box">
+                    <div class="sig-line"></div>
+                    <div class="sig-label">Date & Medical License Number</div>
+                </div>
+            </div>
+
+            <!-- OFFICIAL FOOTER & DISCLAIMER -->
+            <div class="pdf-footer">
+                <p><strong>CAD DISCLAIMER:</strong> This evaluation report was generated automatically by the NeuroScan AI Computer-Aided Diagnostic (CAD) framework for clinical decision support. This document does not replace independent diagnostic review by a certified medical specialist.</p>
+            </div>
+
+            <!-- ON-SCREEN BUTTON ACTION BAR (HIDDEN DURING PRINT) -->
+            <div class="pdf-actions no-print">
+                <button class="btn-action btn-secondary" onclick="document.getElementById('reportModal').classList.remove('active');">Close Preview</button>
+                <button class="btn-action btn-primary" onclick="window.print();"><i class="fa-solid fa-print"></i> Print Report / Save as PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- INTERACTIVE SCRIPT LOGIC -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropzone = document.getElementById('dropzone');
+            const fileInput = document.getElementById('fileInput');
+            const sampleBtns = document.querySelectorAll('.sample-btn');
+            
+            const imgOriginal = document.getElementById('imgOriginal');
+            const imgGradcam = document.getElementById('imgGradcam');
+            
+            const btnModeSide = document.getElementById('btnModeSide');
+            const btnModeSlider = document.getElementById('btnModeSlider');
+            const sideBySideContainer = document.getElementById('sideBySideContainer');
+            const sliderContainer = document.getElementById('sliderContainer');
+            const sliderRange = document.getElementById('sliderRange');
+            const sliderOriginalImg = document.getElementById('sliderOriginalImg');
+            const sliderGradcamImg = document.getElementById('sliderGradcamImg');
+            
+            const diagTitle = document.getElementById('diagTitle');
+            const diagConf = document.getElementById('diagConf');
+            const diagIcon = document.getElementById('diagIcon');
+            const diagIconRing = document.getElementById('diagIconRing');
+            const clinicalTip = document.getElementById('clinicalTip');
+
+            const btnPrintReport = document.getElementById('btnPrintReport');
+            const btnReset = document.getElementById('btnReset');
+            const reportModal = document.getElementById('reportModal');
+            const btnCloseModal = document.getElementById('btnCloseModal');
+
+            let currentResultData = null;
+
+            // ---------------------------------------------
+            // DRAG AND DROP HANDLERS
+            // ---------------------------------------------
+            dropzone.addEventListener('click', () => fileInput.click());
+
+            dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropzone.classList.add('dragover');
+            });
+
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.classList.remove('dragover');
+            });
+
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzone.classList.remove('dragover');
+                if (e.dataTransfer.files.length > 0) {
+                    uploadFile(e.dataTransfer.files[0]);
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    uploadFile(e.target.files[0]);
+                }
+            });
+
+            // ---------------------------------------------
+            // SAMPLE PRESET BUTTONS
+            // ---------------------------------------------
+            sampleBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const clsName = btn.getAttribute('data-cls');
+                    fetchSample(clsName);
+                });
+            });
+
+            // ---------------------------------------------
+            // API CALLS
+            // ---------------------------------------------
+            function setScanningState(isScanning) {
+                if (isScanning) {
+                    dropzone.classList.add('scanning');
+                    diagTitle.textContent = 'Processing Inference...';
+                    diagConf.textContent = '...';
+                } else {
+                    dropzone.classList.remove('scanning');
+                }
+            }
+
+            function uploadFile(file) {
+                setScanningState(true);
+                const formData = new FormData();
+                formData.append('file', file);
+
+                fetch('/api/predict', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    setScanningState(false);
+                    if (data.success) {
+                        displayResult(data);
+                    } else {
+                        alert(data.error || 'Prediction failed');
+                    }
+                })
+                .catch(err => {
+                    setScanningState(false);
+                    console.error(err);
+                    alert('Error connecting to backend server');
+                });
+            }
+
+            function fetchSample(clsName) {
+                setScanningState(true);
+                fetch(`/api/sample/${clsName}`)
+                .then(res => res.json())
+                .then(data => {
+                    setScanningState(false);
+                    if (data.success) {
+                        displayResult(data);
+                    } else {
+                        alert(data.error || 'Sample fetch failed');
+                    }
+                })
+                .catch(err => {
+                    setScanningState(false);
+                    console.error(err);
+                    alert('Error fetching sample scan');
+                });
+            }
+
+            // ---------------------------------------------
+            // DISPLAY RESULTS
+            // ---------------------------------------------
+            function displayResult(data) {
+                currentResultData = data;
+                const { predicted_class, confidence, probabilities, original_image, gradcam_image } = data;
+
+                // Update Viewport Images
+                imgOriginal.src = original_image;
+                imgGradcam.src = gradcam_image;
+
+                sliderOriginalImg.src = original_image;
+                sliderGradcamImg.src = gradcam_image;
+
+                // Update Diagnosis Header
+                const clsDisplay = predicted_class.toUpperCase();
+                diagConf.textContent = `${confidence.toFixed(1)}%`;
+
+                if (predicted_class === 'notumor') {
+                    diagTitle.textContent = 'NO TUMOR DETECTED';
+                    diagTitle.style.color = 'var(--notumor-color)';
+                    diagIcon.className = 'fa-solid fa-shield-halved';
+                    diagIconRing.style.background = 'rgba(16, 185, 129, 0.15)';
+                    diagIconRing.style.color = 'var(--notumor-color)';
+                    diagIconRing.style.borderColor = 'var(--notumor-color)';
+                    diagIconRing.style.boxShadow = '0 0 25px var(--notumor-glow)';
+
+                    clinicalTip.innerHTML = `<strong>Diagnostic Findings:</strong> High-recall (99.41%) negative tumor screening result. Brain parenchyma shows standard intensity levels without localized neoplastic mass.`;
+                } else {
+                    diagTitle.textContent = `${clsDisplay} TUMOR DETECTED`;
+                    let colorVar = 'var(--glioma-color)';
+                    let glowVar = 'var(--glioma-glow)';
+                    if (predicted_class === 'meningioma') { colorVar = 'var(--meningioma-color)'; glowVar = 'var(--meningioma-glow)'; }
+                    if (predicted_class === 'pituitary') { colorVar = 'var(--pituitary-color)'; glowVar = 'var(--pituitary-glow)'; }
+
+                    diagTitle.style.color = colorVar;
+                    diagIcon.className = 'fa-solid fa-triangle-exclamation';
+                    diagIconRing.style.background = 'rgba(244, 63, 94, 0.15)';
+                    diagIconRing.style.color = colorVar;
+                    diagIconRing.style.borderColor = colorVar;
+                    diagIconRing.style.boxShadow = `0 0 25px ${glowVar}`;
+
+                    clinicalTip.innerHTML = `<strong>Diagnostic Findings:</strong> Positive localized Neoplasm (${clsDisplay}). Grad-CAM heatmap highlights primary hyper-intense activation region. Recommended follow-up contrast MRI & neuro-surgical consult.`;
+                }
+
+                // Update Probabilities Bars
+                ['glioma', 'meningioma', 'pituitary', 'notumor'].forEach(cls => {
+                    const pctVal = (probabilities[cls] || 0).toFixed(1);
+                    document.getElementById(`pct-${cls}`).textContent = `${pctVal}%`;
+                    document.getElementById(`bar-${cls}`).style.width = `${pctVal}%`;
+                });
+            }
+
+            // ---------------------------------------------
+            // VIEWPORT SWITCHING (SIDE-BY-SIDE VS CROSSFADE)
+            // ---------------------------------------------
+            btnModeSide.addEventListener('click', () => {
+                btnModeSide.classList.add('active');
+                btnModeSlider.classList.remove('active');
+                sideBySideContainer.style.display = 'grid';
+                sliderContainer.style.display = 'none';
+            });
+
+            btnModeSlider.addEventListener('click', () => {
+                btnModeSlider.classList.add('active');
+                btnModeSide.classList.remove('active');
+                sideBySideContainer.style.display = 'none';
+                sliderContainer.style.display = 'block';
+            });
+
+            // Crossfade Slider Range Input Listener
+            sliderRange.addEventListener('input', (e) => {
+                sliderContainer.style.setProperty('--split-pos', `${e.target.value}%`);
+            });
+
+            // ---------------------------------------------
+            // MAGNIFIER LENS LOUPE (SIDE-BY-SIDE ORIGINAL)
+            // ---------------------------------------------
+            const frameOriginal = document.getElementById('frameOriginal');
+            const magnifierLens = document.getElementById('magnifierLens');
+
+            frameOriginal.addEventListener('mouseenter', () => {
+                if (imgOriginal.src.startsWith('data:image/png')) {
+                    magnifierLens.style.display = 'block';
+                    magnifierLens.style.backgroundImage = `url("${imgOriginal.src}")`;
+                    magnifierLens.style.backgroundSize = `${imgOriginal.clientWidth * 2.5}px ${imgOriginal.clientHeight * 2.5}px`;
+                }
+            });
+
+            frameOriginal.addEventListener('mouseleave', () => {
+                magnifierLens.style.display = 'none';
+            });
+
+            frameOriginal.addEventListener('mousemove', (e) => {
+                if (magnifierLens.style.display !== 'block') return;
+                const rect = frameOriginal.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const lensWidth = magnifierLens.offsetWidth / 2;
+                const lensHeight = magnifierLens.offsetHeight / 2;
+
+                magnifierLens.style.left = `${x - lensWidth}px`;
+                magnifierLens.style.top = `${y - lensHeight}px`;
+
+                const bgX = (x / rect.width) * 100;
+                const bgY = (y / rect.height) * 100;
+                magnifierLens.style.backgroundPosition = `${bgX}% ${bgY}%`;
+            });
+
+            // ---------------------------------------------
+            // RESET & PRINT REPORT MODAL
+            // ---------------------------------------------
+            btnReset.addEventListener('click', () => {
+                imgOriginal.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><rect width='100%' height='100%' fill='%23050811'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%2338BDF8' font-family='sans-serif' font-size='16'>Upload or Select MRI Scan</text></svg>";
+                imgGradcam.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><rect width='100%' height='100%' fill='%23050811'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%2364748B' font-family='sans-serif' font-size='16'>Awaiting Heatmap Generation</text></svg>";
+                sliderOriginalImg.src = "";
+                sliderGradcamImg.src = "";
+
+                diagTitle.textContent = 'Awaiting Image';
+                diagTitle.style.color = 'var(--text-primary)';
+                diagConf.textContent = '--%';
+                diagIcon.className = 'fa-solid fa-pulse';
+                diagIconRing.style.background = 'rgba(0, 229, 255, 0.15)';
+                diagIconRing.style.color = 'var(--cyan-electric)';
+                diagIconRing.style.borderColor = 'var(--cyan-electric)';
+                diagIconRing.style.boxShadow = '0 0 25px var(--border-glow)';
+
+                clinicalTip.innerHTML = `<strong>System Instructions:</strong> Upload a brain MRI scan or choose a test sample from the left toolbar to initiate hybrid CNN-ViT inference and Grad-CAM lesion localization.`;
+
+                ['glioma', 'meningioma', 'pituitary', 'notumor'].forEach(cls => {
+                    document.getElementById(`pct-${cls}`).textContent = '0.0%';
+                    document.getElementById(`bar-${cls}`).style.width = '0%';
+                });
+
+                currentResultData = null;
+            });
+
+            btnPrintReport.addEventListener('click', () => {
+                if (!currentResultData) {
+                    alert('Please select or upload an MRI scan first to generate a report.');
+                    return;
+                }
+
+                const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                const randRef = Math.floor(1000 + Math.random() * 9000);
+                
+                document.getElementById('reportPatientId').textContent = `PT-2026-${randRef}`;
+                document.getElementById('reportDate').textContent = dateStr;
+                document.getElementById('reportRef').textContent = `#NS-${randRef}`;
+
+                const cls = currentResultData.predicted_class;
+                const conf = currentResultData.confidence;
+
+                const reportClass = document.getElementById('reportClass');
+                const reportSeverityTag = document.getElementById('reportSeverityTag');
+
+                if (cls === 'notumor') {
+                    reportClass.textContent = 'NO TUMOR DETECTED';
+                    reportClass.style.color = '#10B981';
+                    reportSeverityTag.textContent = 'LOW RISK - NORMAL SCREENING RESULT';
+                    reportSeverityTag.style.background = 'rgba(16, 185, 129, 0.15)';
+                    reportSeverityTag.style.color = '#10B981';
+                    reportSeverityTag.style.borderColor = '#10B981';
+                } else {
+                    const clsUpper = cls.toUpperCase();
+                    reportClass.textContent = `${clsUpper} TUMOR DETECTED`;
+                    let c = '#F43F5E';
+                    if (cls === 'meningioma') c = '#F59E0B';
+                    if (cls === 'pituitary') c = '#EC4899';
+                    reportClass.style.color = c;
+                    reportSeverityTag.textContent = 'HIGH RISK - NEURO-SURGICAL EVALUATION RECOMMENDED';
+                    reportSeverityTag.style.background = 'rgba(244, 63, 94, 0.15)';
+                    reportSeverityTag.style.color = c;
+                    reportSeverityTag.style.borderColor = c;
+                }
+
+                document.getElementById('reportConf').textContent = `${conf.toFixed(1)}%`;
+                document.getElementById('reportOrigImg').src = currentResultData.original_image;
+                document.getElementById('reportGradcamImg').src = currentResultData.gradcam_image;
+
+                // Populate Multi-Class Probability Table Rows
+                const probBody = document.getElementById('reportProbTableBody');
+                probBody.innerHTML = '';
+                const sortedClasses = ['glioma', 'meningioma', 'pituitary', 'notumor'];
+                sortedClasses.forEach(cName => {
+                    const probVal = (currentResultData.probabilities[cName] || 0).toFixed(1);
+                    const isPrimary = cName === cls;
+                    const tr = document.createElement('tr');
+                    const displayName = cName === 'notumor' ? 'Healthy (No Tumor)' : `${cName.charAt(0).toUpperCase() + cName.slice(1)} Tumor`;
+                    const statusText = isPrimary ? 'Primary Finding' : (probVal > 10 ? 'Secondary Risk' : 'Low Probability');
+                    
+                    tr.innerHTML = `
+                        <td><strong>${displayName}</strong> ${isPrimary ? '<i class="fa-solid fa-circle-check" style="color: var(--cyan-electric); margin-left: 4px;"></i>' : ''}</td>
+                        <td class="prob-val">${probVal}%</td>
+                        <td style="width: 35%;">
+                            <div style="height: 8px; background: rgba(6, 11, 22, 0.6); border-radius: 4px; overflow: hidden; border: 1px solid var(--border-subtle);">
+                                <div style="height: 100%; width: ${probVal}%; background: ${isPrimary ? 'var(--cyan-electric)' : 'var(--indigo-bright)'};"></div>
+                            </div>
+                        </td>
+                        <td>${statusText}</td>
+                    `;
+                    probBody.appendChild(tr);
+                });
+
+                reportModal.classList.add('active');
+            });
+
+            btnCloseModal.addEventListener('click', () => {
+                reportModal.classList.remove('active');
+            });
+
+            // Load initial sample automatically for instant visual impact
+            fetchSample('glioma');
+        });
+    </script>
+</body>
+</html>
