@@ -12,8 +12,10 @@ A state-of-the-art Deep Learning framework for multi-class Brain Tumor MRI image
   * **Glioma:** 95.39% Precision
   * **Meningioma:** 92.86% Precision
   * **Pituitary:** 94.98% Precision | 95.78% Recall
-* **Explainable AI (Grad-CAM):** Differentiable backpropagation to output heatmaps overlaying exact tumor regions.
-* **Interactive Web Dashboard:** Modern Web UI for live MRI file drag-and-drop, 1-click test sample analysis, and side-by-side CLAHE MRI vs. Grad-CAM visualizer.
+* **Dual-Branch Explainable AI (XAI):** 
+  * **PDSCNN Grad-CAM Heatmaps:** Local convolutional filter gradient activations (conv3 layer) highlighting tumor boundaries.
+  * **ViT Self-Attention Maps:** Multi-head transformer attention rollout across 64 spatial patches capturing global contextual focus.
+* **Interactive Web Dashboard:** Modern Cyber-Radiology UI for live MRI file drag-and-drop, 1-click test preset analysis, 3-way side-by-side inspection (Input MRI, Grad-CAM, ViT Attention), and interactive crossfade slider reveal.
 
 ---
 
@@ -28,6 +30,7 @@ A state-of-the-art Deep Learning framework for multi-class Brain Tumor MRI image
  (Depthwise Separable Feature Extractor)                        (Patch Embed 16x16 + Trans. Encoder)
                │                                                             │
                ▼ (256-dim features)                                          ▼ (128-dim features)
+               │ [Grad-CAM Hook]                                             │ [Self-Attention Rollout]
                └──────────────────────────────┬──────────────────────────────┘
                                               ▼
                              [ Hybrid Feature Fusion (384-dim) ]
@@ -36,7 +39,7 @@ A state-of-the-art Deep Learning framework for multi-class Brain Tumor MRI image
                    [ Regularized Ridge Extreme Learning Machine (RRELM) ]
                                               │
                                               ▼
-                       [ Class Prediction & Grad-CAM Heatmap Overlay ]
+                     [ Class Prediction + Dual XAI Visualization ]
 ```
 
 ---

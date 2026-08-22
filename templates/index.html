@@ -481,14 +481,14 @@
         }
 
         /* VIEWPORT CONTAINERS */
-        /* Mode A: Side by Side */
+        /* Mode A: Side by Side (3-Way Dual-Branch XAI Grid) */
         .view-side-by-side {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.25rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.1rem;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 1100px) {
             .view-side-by-side {
                 grid-template-columns: 1fr;
             }
@@ -523,7 +523,7 @@
             border: 1px solid var(--border-subtle);
             padding: 0.35rem 0.75rem;
             border-radius: 8px;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             font-family: 'JetBrains Mono', monospace;
             font-weight: 600;
             color: var(--cyan-electric);
@@ -531,6 +531,34 @@
             align-items: center;
             gap: 0.4rem;
             z-index: 10;
+        }
+
+        .frame-label-vit {
+            color: #C084FC !important;
+            border-color: rgba(192, 132, 252, 0.3) !important;
+        }
+
+        .layer-btn {
+            padding: 0.4rem 0.85rem;
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            border-radius: 7px;
+            border: 1px solid var(--border-subtle);
+            background: rgba(6, 11, 22, 0.8);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .layer-btn.active {
+            border-color: var(--cyan-electric);
+            background: rgba(0, 229, 255, 0.15);
+            color: var(--cyan-electric);
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
         }
 
         .magnifier-lens {
@@ -545,6 +573,66 @@
             background-repeat: no-repeat;
             display: none;
             z-index: 20;
+        }
+
+        /* COLOR SCALE LEGENDS */
+        .viewport-col {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .frame-legend {
+            background: rgba(6, 11, 22, 0.85);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 0.55rem 0.8rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+        }
+
+        .legend-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.68rem;
+            font-weight: 500;
+        }
+
+        .legend-title {
+            font-weight: 700;
+            font-size: 0.72rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .legend-track {
+            height: 8px;
+            border-radius: 4px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .legend-clahe {
+            background: linear-gradient(to right, #000000 0%, #444444 33%, #999999 66%, #ffffff 100%);
+        }
+
+        .legend-gradcam {
+            background: linear-gradient(to right, #000080 0%, #0000ff 20%, #00ffff 40%, #00ff00 60%, #ffff00 80%, #ff0000 100%);
+        }
+
+        .legend-attention {
+            background: linear-gradient(to right, #000004 0%, #3b0f70 25%, #8c2981 50%, #de4968 75%, #fe9f6d 90%, #fcfdbf 100%);
+        }
+
+        .slider-legend-box {
+            max-width: 600px;
+            margin: 0.8rem auto 0 auto;
         }
 
         /* Mode B: Interactive Crossfade Slider */
@@ -992,8 +1080,14 @@
 
         .pdf-images-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.2rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .pdf-images-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .pdf-img-card {
@@ -1328,11 +1422,11 @@
                     <div class="viewport-header">
                         <div class="panel-title">
                             <i class="fa-solid fa-eye"></i>
-                            <span>Grad-CAM Visual Interpretability Viewport</span>
+                            <span>Dual-Branch Explainable AI (XAI) Viewport</span>
                         </div>
                         <div class="mode-switch-group">
                             <button class="mode-btn active" id="btnModeSide">
-                                <i class="fa-solid fa-columns"></i> Side-by-Side
+                                <i class="fa-solid fa-columns"></i> Side-by-Side (3-Way)
                             </button>
                             <button class="mode-btn" id="btnModeSlider">
                                 <i class="fa-solid fa-sliders"></i> Crossfade Reveal
@@ -1340,23 +1434,67 @@
                         </div>
                     </div>
 
-                    <!-- MODE A: SIDE BY SIDE -->
+                    <!-- SLIDER LAYER SELECTOR (Visible only in Crossfade mode) -->
+                    <div class="slider-target-selector" id="sliderTargetSelector" style="display: none; justify-content: center; gap: 0.75rem; margin-bottom: 0.4rem;">
+                        <button class="layer-btn active" id="btnRevealGradcam"><i class="fa-solid fa-fire-flame-curved"></i> Reveal PDSCNN Grad-CAM</button>
+                        <button class="layer-btn" id="btnRevealAttention"><i class="fa-solid fa-brain"></i> Reveal ViT Attention Map</button>
+                    </div>
+
+                    <!-- MODE A: SIDE BY SIDE (3-WAY VIEW) -->
                     <div class="view-side-by-side" id="sideBySideContainer">
-                        <div class="mri-frame" id="frameOriginal">
-                            <div class="frame-label"><i class="fa-solid fa-sliders"></i> CLAHE MRI SCAN</div>
-                            <img id="imgOriginal" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><rect width='100%' height='100%' fill='%23050811'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%2338BDF8' font-family='sans-serif' font-size='16'>Upload or Select MRI Scan</text></svg>" alt="Original MRI">
-                            <div class="magnifier-lens" id="magnifierLens"></div>
+                        <!-- Column 1: CLAHE MRI -->
+                        <div class="viewport-col">
+                            <div class="mri-frame" id="frameOriginal">
+                                <div class="frame-label"><i class="fa-solid fa-sliders"></i> CLAHE MRI SCAN</div>
+                                <img id="imgOriginal" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><rect width='100%' height='100%' fill='%23050811'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%2338BDF8' font-family='sans-serif' font-size='16'>Upload or Select MRI Scan</text></svg>" alt="Original MRI">
+                                <div class="magnifier-lens" id="magnifierLens"></div>
+                            </div>
+                            <div class="frame-legend">
+                                <div class="legend-header">
+                                    <span>Hypo-intense (Dark)</span>
+                                    <span class="legend-title" style="color: var(--cyan-bright);"><i class="fa-solid fa-sliders"></i> Tissue Contrast</span>
+                                    <span>Hyper-intense (Bright)</span>
+                                </div>
+                                <div class="legend-track legend-clahe"></div>
+                            </div>
                         </div>
 
-                        <div class="mri-frame" id="frameGradcam">
-                            <div class="frame-label"><i class="fa-solid fa-fire-flame-curved"></i> GRAD-CAM ATTENTION</div>
-                            <img id="imgGradcam" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><rect width='100%' height='100%' fill='%23050811'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%2364748B' font-family='sans-serif' font-size='16'>Awaiting Heatmap Generation</text></svg>" alt="Grad-CAM Heatmap">
+                        <!-- Column 2: PDSCNN Grad-CAM -->
+                        <div class="viewport-col">
+                            <div class="mri-frame" id="frameGradcam">
+                                <div class="frame-label"><i class="fa-solid fa-fire-flame-curved"></i> PDSCNN GRAD-CAM</div>
+                                <img id="imgGradcam" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><rect width='100%' height='100%' fill='%23050811'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%2364748B' font-family='sans-serif' font-size='16'>Awaiting Heatmap Generation</text></svg>" alt="Grad-CAM Heatmap">
+                            </div>
+                            <div class="frame-legend">
+                                <div class="legend-header">
+                                    <span style="color: #60A5FA;">🔵 Normal (0%)</span>
+                                    <span class="legend-title" style="color: #F87171;"><i class="fa-solid fa-fire"></i> CNN Local Focus</span>
+                                    <span style="color: #EF4444;">🔴 Tumor Core (100%)</span>
+                                </div>
+                                <div class="legend-track legend-gradcam"></div>
+                            </div>
+                        </div>
+
+                        <!-- Column 3: ViT Self-Attention -->
+                        <div class="viewport-col">
+                            <div class="mri-frame" id="frameAttention">
+                                <div class="frame-label frame-label-vit"><i class="fa-solid fa-brain"></i> ViT SELF-ATTENTION</div>
+                                <img id="imgAttention" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><rect width='100%' height='100%' fill='%23050811'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%23C084FC' font-family='sans-serif' font-size='15'>Awaiting ViT Rollout</text></svg>" alt="ViT Attention Map">
+                            </div>
+                            <div class="frame-legend">
+                                <div class="legend-header">
+                                    <span style="color: #C084FC;">🟣 Low Weight (0%)</span>
+                                    <span class="legend-title" style="color: #E879F9;"><i class="fa-solid fa-brain"></i> ViT Patch Attention</span>
+                                    <span style="color: #FDE047;">🟡 Peak Focus (100%)</span>
+                                </div>
+                                <div class="legend-track legend-attention"></div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- MODE B: CROSSFADE SLIDER -->
                     <div class="view-slider-mode" id="sliderContainer">
-                        <img id="sliderGradcamImg" class="slider-img base-img" src="" alt="GradCAM Heatmap">
+                        <img id="sliderGradcamImg" class="slider-img base-img" src="" alt="Overlay Heatmap">
                         <img id="sliderOriginalImg" class="slider-img top-img" src="" alt="Original MRI">
                         <div class="slider-divider" id="sliderDivider">
                             <div class="slider-handle-button">
@@ -1364,6 +1502,14 @@
                             </div>
                         </div>
                         <input type="range" min="0" max="100" value="50" class="slider-range-input" id="sliderRange">
+                    </div>
+                    <div class="frame-legend slider-legend-box" id="sliderLegendBox" style="display: none;">
+                        <div class="legend-header">
+                            <span id="sliderLegendLeft">🔵 Normal Background (0%)</span>
+                            <span class="legend-title" id="sliderLegendTitle"><i class="fa-solid fa-layer-group"></i> Active Reveal Colormap</span>
+                            <span id="sliderLegendRight">🔴 Critical Tumor Activation (100%)</span>
+                        </div>
+                        <div class="legend-track legend-gradcam" id="sliderLegendTrack"></div>
                     </div>
                 </div>
 
@@ -1491,22 +1637,32 @@
                 </div>
             </div>
 
-            <!-- RADIOLOGICAL IMAGERY & GRAD-CAM HEATMAP -->
-            <div class="pdf-section-title"><i class="fa-solid fa-images"></i> Radiological Imagery & Lesion Localization</div>
+            <!-- RADIOLOGICAL IMAGERY & DUAL-BRANCH XAI MAPS -->
+            <div class="pdf-section-title"><i class="fa-solid fa-images"></i> Radiological Imagery & Dual-Branch XAI Interpretability</div>
             <div class="pdf-images-grid">
                 <div class="pdf-img-card">
                     <div class="pdf-img-header">CLAHE Contrast-Enhanced Scan</div>
                     <div class="pdf-img-container">
                         <img id="reportOrigImg" src="" alt="CLAHE MRI Scan">
                     </div>
-                    <div class="pdf-img-caption">Grayscale input slice after CLAHE histogram equalization</div>
+                    <div class="pdf-img-caption">Preprocessed grayscale input slice after CLAHE histogram equalization</div>
+                    <div class="legend-track legend-clahe" style="margin-top: 6px; height: 5px;"></div>
                 </div>
                 <div class="pdf-img-card">
-                    <div class="pdf-img-header">Grad-CAM XAI Heatmap Localization</div>
+                    <div class="pdf-img-header">PDSCNN Grad-CAM Heatmap</div>
                     <div class="pdf-img-container">
                         <img id="reportGradcamImg" src="" alt="Grad-CAM Heatmap">
                     </div>
-                    <div class="pdf-img-caption">Hyper-intense activation zones driving deep classifier prediction</div>
+                    <div class="pdf-img-caption">Local CNN gradient activations (conv3). <strong>Red = High Tumor Focus</strong>.</div>
+                    <div class="legend-track legend-gradcam" style="margin-top: 6px; height: 5px;"></div>
+                </div>
+                <div class="pdf-img-card">
+                    <div class="pdf-img-header">ViT Self-Attention Rollout</div>
+                    <div class="pdf-img-container">
+                        <img id="reportAttentionImg" src="" alt="ViT Attention Map">
+                    </div>
+                    <div class="pdf-img-caption">Global inter-patch token attention. <strong>Yellow = Top Patch Focus</strong>.</div>
+                    <div class="legend-track legend-attention" style="margin-top: 6px; height: 5px;"></div>
                 </div>
             </div>
 
@@ -1572,9 +1728,14 @@
             
             const imgOriginal = document.getElementById('imgOriginal');
             const imgGradcam = document.getElementById('imgGradcam');
+            const imgAttention = document.getElementById('imgAttention');
             
             const btnModeSide = document.getElementById('btnModeSide');
             const btnModeSlider = document.getElementById('btnModeSlider');
+            const sliderTargetSelector = document.getElementById('sliderTargetSelector');
+            const btnRevealGradcam = document.getElementById('btnRevealGradcam');
+            const btnRevealAttention = document.getElementById('btnRevealAttention');
+
             const sideBySideContainer = document.getElementById('sideBySideContainer');
             const sliderContainer = document.getElementById('sliderContainer');
             const sliderRange = document.getElementById('sliderRange');
@@ -1593,6 +1754,7 @@
             const btnCloseModal = document.getElementById('btnCloseModal');
 
             let currentResultData = null;
+            let currentRevealMode = 'gradcam'; // 'gradcam' or 'attention'
 
             // ---------------------------------------------
             // DRAG AND DROP HANDLERS
@@ -1638,7 +1800,7 @@
             function setScanningState(isScanning) {
                 if (isScanning) {
                     dropzone.classList.add('scanning');
-                    diagTitle.textContent = 'Processing Inference...';
+                    diagTitle.textContent = 'Processing Hybrid Inference...';
                     diagConf.textContent = '...';
                 } else {
                     dropzone.classList.remove('scanning');
@@ -1694,14 +1856,17 @@
             // ---------------------------------------------
             function displayResult(data) {
                 currentResultData = data;
-                const { predicted_class, confidence, probabilities, original_image, gradcam_image } = data;
+                const { predicted_class, confidence, probabilities, original_image, gradcam_image, vit_attention_image } = data;
 
                 // Update Viewport Images
                 imgOriginal.src = original_image;
                 imgGradcam.src = gradcam_image;
+                if (imgAttention && vit_attention_image) {
+                    imgAttention.src = vit_attention_image;
+                }
 
                 sliderOriginalImg.src = original_image;
-                sliderGradcamImg.src = gradcam_image;
+                sliderGradcamImg.src = currentRevealMode === 'attention' && vit_attention_image ? vit_attention_image : gradcam_image;
 
                 // Update Diagnosis Header
                 const clsDisplay = predicted_class.toUpperCase();
@@ -1716,7 +1881,7 @@
                     diagIconRing.style.borderColor = 'var(--notumor-color)';
                     diagIconRing.style.boxShadow = '0 0 25px var(--notumor-glow)';
 
-                    clinicalTip.innerHTML = `<strong>Diagnostic Findings:</strong> High-recall (99.41%) negative tumor screening result. Brain parenchyma shows standard intensity levels without localized neoplastic mass.`;
+                    clinicalTip.innerHTML = `<strong>Diagnostic Findings:</strong> High-recall (99.41%) negative tumor screening result. Brain parenchyma shows standard intensity levels without localized neoplastic mass across CNN activations and ViT patch attention.`;
                 } else {
                     diagTitle.textContent = `${clsDisplay} TUMOR DETECTED`;
                     let colorVar = 'var(--glioma-color)';
@@ -1731,7 +1896,7 @@
                     diagIconRing.style.borderColor = colorVar;
                     diagIconRing.style.boxShadow = `0 0 25px ${glowVar}`;
 
-                    clinicalTip.innerHTML = `<strong>Diagnostic Findings:</strong> Positive localized Neoplasm (${clsDisplay}). Grad-CAM heatmap highlights primary hyper-intense activation region. Recommended follow-up contrast MRI & neuro-surgical consult.`;
+                    clinicalTip.innerHTML = `<strong>Diagnostic Findings:</strong> Positive localized Neoplasm (${clsDisplay}). Both PDSCNN Grad-CAM and ViT Self-Attention Rollout corroborate localized hyper-intense mass. Recommended follow-up contrast MRI & neuro-surgical consult.`;
                 }
 
                 // Update Probabilities Bars
@@ -1745,11 +1910,18 @@
             // ---------------------------------------------
             // VIEWPORT SWITCHING (SIDE-BY-SIDE VS CROSSFADE)
             // ---------------------------------------------
+            const sliderLegendBox = document.getElementById('sliderLegendBox');
+            const sliderLegendTrack = document.getElementById('sliderLegendTrack');
+            const sliderLegendLeft = document.getElementById('sliderLegendLeft');
+            const sliderLegendRight = document.getElementById('sliderLegendRight');
+
             btnModeSide.addEventListener('click', () => {
                 btnModeSide.classList.add('active');
                 btnModeSlider.classList.remove('active');
                 sideBySideContainer.style.display = 'grid';
                 sliderContainer.style.display = 'none';
+                sliderTargetSelector.style.display = 'none';
+                if (sliderLegendBox) sliderLegendBox.style.display = 'none';
             });
 
             btnModeSlider.addEventListener('click', () => {
@@ -1757,6 +1929,37 @@
                 btnModeSide.classList.remove('active');
                 sideBySideContainer.style.display = 'none';
                 sliderContainer.style.display = 'block';
+                sliderTargetSelector.style.display = 'flex';
+                if (sliderLegendBox) sliderLegendBox.style.display = 'flex';
+            });
+
+            // Slider reveal target switching
+            btnRevealGradcam.addEventListener('click', () => {
+                currentRevealMode = 'gradcam';
+                btnRevealGradcam.classList.add('active');
+                btnRevealAttention.classList.remove('active');
+                if (currentResultData) {
+                    sliderGradcamImg.src = currentResultData.gradcam_image;
+                }
+                if (sliderLegendTrack) {
+                    sliderLegendTrack.className = 'legend-track legend-gradcam';
+                    sliderLegendLeft.textContent = '🔵 Normal Background (0%)';
+                    sliderLegendRight.textContent = '🔴 Critical Tumor Activation (100%)';
+                }
+            });
+
+            btnRevealAttention.addEventListener('click', () => {
+                currentRevealMode = 'attention';
+                btnRevealAttention.classList.add('active');
+                btnRevealGradcam.classList.remove('active');
+                if (currentResultData && currentResultData.vit_attention_image) {
+                    sliderGradcamImg.src = currentResultData.vit_attention_image;
+                }
+                if (sliderLegendTrack) {
+                    sliderLegendTrack.className = 'legend-track legend-attention';
+                    sliderLegendLeft.textContent = '🟣 Low Weight (0%)';
+                    sliderLegendRight.textContent = '🟡 Peak Attention (100%)';
+                }
             });
 
             // Crossfade Slider Range Input Listener
@@ -1805,6 +2008,7 @@
             btnReset.addEventListener('click', () => {
                 imgOriginal.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><rect width='100%' height='100%' fill='%23050811'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%2338BDF8' font-family='sans-serif' font-size='16'>Upload or Select MRI Scan</text></svg>";
                 imgGradcam.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><rect width='100%' height='100%' fill='%23050811'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%2364748B' font-family='sans-serif' font-size='16'>Awaiting Heatmap Generation</text></svg>";
+                imgAttention.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><rect width='100%' height='100%' fill='%23050811'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%23C084FC' font-family='sans-serif' font-size='15'>Awaiting ViT Rollout</text></svg>";
                 sliderOriginalImg.src = "";
                 sliderGradcamImg.src = "";
 
@@ -1817,7 +2021,7 @@
                 diagIconRing.style.borderColor = 'var(--cyan-electric)';
                 diagIconRing.style.boxShadow = '0 0 25px var(--border-glow)';
 
-                clinicalTip.innerHTML = `<strong>System Instructions:</strong> Upload a brain MRI scan or choose a test sample from the left toolbar to initiate hybrid CNN-ViT inference and Grad-CAM lesion localization.`;
+                clinicalTip.innerHTML = `<strong>System Instructions:</strong> Upload a brain MRI scan or choose a test sample from the left toolbar to initiate hybrid CNN-ViT inference and dual-branch XAI lesion localization.`;
 
                 ['glioma', 'meningioma', 'pituitary', 'notumor'].forEach(cls => {
                     document.getElementById(`pct-${cls}`).textContent = '0.0%';
@@ -1869,6 +2073,9 @@
                 document.getElementById('reportConf').textContent = `${conf.toFixed(1)}%`;
                 document.getElementById('reportOrigImg').src = currentResultData.original_image;
                 document.getElementById('reportGradcamImg').src = currentResultData.gradcam_image;
+                if (document.getElementById('reportAttentionImg') && currentResultData.vit_attention_image) {
+                    document.getElementById('reportAttentionImg').src = currentResultData.vit_attention_image;
+                }
 
                 // Populate Multi-Class Probability Table Rows
                 const probBody = document.getElementById('reportProbTableBody');

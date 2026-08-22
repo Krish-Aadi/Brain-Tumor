@@ -9,7 +9,7 @@ from flask import Flask, render_template, request, jsonify
 
 from model import HybridFeatureExtractor
 from dataset_loader import BrainTumorDataset
-from gradcam import GradCAM, overlay_heatmap
+from gradcam import GradCAM, ViTAttentionMap, overlay_heatmap, overlay_attention_map
 
 app = Flask(__name__)
 
@@ -20,11 +20,12 @@ rrelm_W = None
 rrelm_b = None
 rrelm_beta = None
 grad_cam = None
+vit_attention = None
 dataset_helper = None
 classes = ['glioma', 'meningioma', 'notumor', 'pituitary']
 
 def load_model_and_weights():
-    global feature_extractor, rrelm_W, rrelm_b, rrelm_beta, grad_cam, dataset_helper
+    global feature_extractor, rrelm_W, rrelm_b, rrelm_beta, grad_cam, vit_attention, dataset_helper
     weights_path = os.path.join('weights', 'model.pth')
     if not os.path.exists(weights_path):
         print(f"Error: Weights file '{weights_path}' not found!")
@@ -42,6 +43,7 @@ def load_model_and_weights():
     rrelm_beta = checkpoint['rrelm_beta'].to(device)
     
     grad_cam = GradCAM(feature_extractor, rrelm_W, rrelm_b, rrelm_beta, device=device)
+    vit_attention = ViTAttentionMap(feature_extractor, device=device)
     dataset_helper = BrainTumorDataset(root_dir='dataset', split='test', transform=False)
     print("Model and weights successfully loaded!")
     return True
@@ -62,9 +64,13 @@ def process_and_predict(raw_img_bgr):
     tensor_img = np.transpose(tensor_img, (2, 0, 1))
     tensor_img = torch.from_numpy(tensor_img).unsqueeze(0).to(device)
     
-    # Generate Grad-CAM Heatmap
+    # Generate Grad-CAM Heatmap (PDSCNN Conv branch)
     cam, pred_class, conf = grad_cam.generate_heatmap(tensor_img)
-    overlaid_img = overlay_heatmap(processed_img, cam, alpha=0.45)
+    overlaid_cam = overlay_heatmap(processed_img, cam, alpha=0.45)
+    
+    # Generate ViT Attention Map (Transformer branch)
+    vit_map = vit_attention.generate_attention_map(tensor_img)
+    overlaid_vit = overlay_attention_map(processed_img, vit_map, alpha=0.45)
     
     # Compute full probabilities
     with torch.no_grad():
@@ -76,7 +82,8 @@ def process_and_predict(raw_img_bgr):
     probs_dict = {classes[i]: float(probs[i] * 100) for i in range(4)}
     
     orig_b64 = numpy_to_base64(processed_img)
-    gradcam_b64 = numpy_to_base64(overlaid_img)
+    gradcam_b64 = numpy_to_base64(overlaid_cam)
+    vit_b64 = numpy_to_base64(overlaid_vit)
     
     return {
         "success": True,
@@ -84,7 +91,8 @@ def process_and_predict(raw_img_bgr):
         "confidence": float(conf * 100),
         "probabilities": probs_dict,
         "original_image": orig_b64,
-        "gradcam_image": gradcam_b64
+        "gradcam_image": gradcam_b64,
+        "vit_attention_image": vit_b64
     }
 
 @app.route('/')
@@ -136,5 +144,5 @@ if __name__ == '__main__':
     if not loaded:
         print("Failed to initialize backend. Exiting...")
     else:
-        print("\n Starting Brain Tumor Classification Web Dashboard on http://127.0.0.1:5000")
-        app.run(host='127.0.0.1', port=5000, debug=False)
+        print("\n Starting Brain Tumor Classification Web Dashboard on http://127.0.0.1:5001")
+        app.run(host='127.0.0.1', port=5001, debug=False)

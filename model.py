@@ -84,6 +84,28 @@ class ViTBranch(nn.Module):
         cls_output = x[:, 0]  # [B, 128]
         return cls_output
 
+    def get_attention_maps(self, x):
+        """
+        Extract self-attention matrices from each transformer encoder layer.
+        x: [B, 3, 124, 124]
+        Returns list of attention tensors, each of shape [B, num_heads, 65, 65]
+        """
+        x = F.pad(x, (2, 2, 2, 2), "constant", 0)
+        B = x.shape[0]
+        x = self.patch_embed(x)  # [B, 64, 128]
+        cls_tokens = self.cls_token.expand(B, -1, -1)  # [B, 1, 128]
+        x = torch.cat((cls_tokens, x), dim=1)          # [B, 65, 128]
+        x = x + self.pos_embed                         # [B, 65, 128]
+
+        attention_maps = []
+        cur = x
+        for layer in self.transformer.layers:
+            attn_out, attn_weights = layer.self_attn(cur, cur, cur, need_weights=True, average_attn_weights=False)
+            attention_maps.append(attn_weights)
+            cur = layer.norm1(cur + attn_out)
+            cur = layer.norm2(cur + layer.linear2(layer.dropout(F.relu(layer.linear1(cur)))))
+        return attention_maps
+
 class HybridFeatureExtractor(nn.Module):
     def __init__(self):
         super(HybridFeatureExtractor, self).__init__()
@@ -97,6 +119,9 @@ class HybridFeatureExtractor(nn.Module):
         # Concatenate features
         fused_features = torch.cat((cnn_features, vit_features), dim=1)  # [B, 384]
         return fused_features
+
+    def get_vit_attention_maps(self, x):
+        return self.vit.get_attention_maps(x)
 
 class EndToEndModel(nn.Module):
     """

@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 from model import HybridFeatureExtractor
 from dataset_loader import BrainTumorDataset
-from gradcam import GradCAM, overlay_heatmap
+from gradcam import GradCAM, ViTAttentionMap, overlay_heatmap, overlay_attention_map
 
 def predict_single_image(image_path):
     if not os.path.exists(image_path):
@@ -54,6 +54,10 @@ def predict_single_image(image_path):
     cam, pred_class, confidence = grad_cam.generate_heatmap(tensor_img)
     predicted_label = classes[pred_class]
 
+    # 5. Run ViT Attention Map
+    vit_attention = ViTAttentionMap(feature_extractor, device=device)
+    vit_map = vit_attention.generate_attention_map(tensor_img)
+
     # Get probabilities for all classes
     with torch.no_grad():
         feats = feature_extractor(tensor_img.to(device))
@@ -61,8 +65,9 @@ def predict_single_image(image_path):
         logits = H @ rrelm_beta.to(device)
         probs = F.softmax(logits, dim=1).cpu().numpy()[0]
 
-    # Superimpose heatmap
-    overlaid_img = overlay_heatmap(processed_img, cam, alpha=0.45)
+    # Superimpose heatmaps
+    overlaid_cam = overlay_heatmap(processed_img, cam, alpha=0.45)
+    overlaid_vit = overlay_attention_map(processed_img, vit_map, alpha=0.45)
 
     # Print Results
     print("\n" + "="*45)
@@ -77,8 +82,8 @@ def predict_single_image(image_path):
         print(f"  - {cls_name:<12}: {prob*100:5.2f}% {bar}")
     print("="*45)
 
-    # Plot Visualizing Image, Heatmap & Probabilities
-    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+    # Plot Visualizing Image, Grad-CAM, ViT Attention & Probabilities
+    fig, axes = plt.subplots(1, 4, figsize=(20, 5))
 
     # Preprocessed MRI
     axes[0].imshow(processed_img)
@@ -86,21 +91,27 @@ def predict_single_image(image_path):
     axes[0].axis('off')
 
     # Grad-CAM Overlay
-    axes[1].imshow(overlaid_img)
-    axes[1].set_title(f"Grad-CAM Explanation\n{predicted_label.upper()} ({confidence*100:.1f}%)", 
+    axes[1].imshow(overlaid_cam)
+    axes[1].set_title(f"PDSCNN Grad-CAM\n{predicted_label.upper()} ({confidence*100:.1f}%)", 
                        fontsize=11, fontweight='bold', color='green')
     axes[1].axis('off')
+
+    # ViT Attention Overlay
+    axes[2].imshow(overlaid_vit)
+    axes[2].set_title(f"ViT Attention Map\n(64 Patches Global Context)", 
+                       fontsize=11, fontweight='bold', color='purple')
+    axes[2].axis('off')
 
     # Class Probabilities Bar Chart
     colors = ['gray', 'gray', 'gray', 'gray']
     colors[pred_class] = '#2ca02c'
     y_pos = np.arange(len(classes))
-    axes[2].barh(y_pos, probs * 100, color=colors, edgecolor='black')
-    axes[2].set_yticks(y_pos)
-    axes[2].set_yticklabels(classes, fontsize=10, fontweight='bold')
-    axes[2].invert_yaxis()  # top-down
-    axes[2].set_xlabel('Probability (%)', fontsize=10, fontweight='bold')
-    axes[2].set_title('Prediction Distribution', fontsize=11, fontweight='bold')
+    axes[3].barh(y_pos, probs * 100, color=colors, edgecolor='black')
+    axes[3].set_yticks(y_pos)
+    axes[3].set_yticklabels(classes, fontsize=10, fontweight='bold')
+    axes[3].invert_yaxis()  # top-down
+    axes[3].set_xlabel('Probability (%)', fontsize=10, fontweight='bold')
+    axes[3].set_title('Prediction Distribution', fontsize=11, fontweight='bold')
 
     plt.tight_layout()
     output_path = "prediction_result.png"

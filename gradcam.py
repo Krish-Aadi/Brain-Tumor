@@ -101,6 +101,66 @@ def overlay_heatmap(original_img, cam, alpha=0.4):
     
     return superimposed_img
 
+class ViTAttentionMap:
+    def __init__(self, feature_extractor, device='cpu'):
+        """
+        feature_extractor: Trained HybridFeatureExtractor model instance
+        """
+        self.feature_extractor = feature_extractor.to(device)
+        self.device = device
+
+    def generate_attention_map(self, input_tensor, method='rollout'):
+        """
+        input_tensor: PyTorch Tensor [1, 3, 124, 124]
+        method: 'rollout' (Attention Rollout across layers) or 'last_layer'
+        Returns: 2D numpy array [124, 124] normalized in range [0, 1]
+        """
+        self.feature_extractor.eval()
+        with torch.no_grad():
+            tensor = input_tensor.to(self.device)
+            attn_weights_list = self.feature_extractor.get_vit_attention_maps(tensor)
+            
+            num_tokens = attn_weights_list[0].shape[-1]  # 65
+            if method == 'rollout':
+                rollout = torch.eye(num_tokens, device=self.device)
+                for layer_attn in attn_weights_list:  # [1, num_heads, 65, 65]
+                    attn_heads_mean = layer_attn[0].mean(dim=0)  # [65, 65]
+                    attn_heads_mean = 0.5 * attn_heads_mean + 0.5 * torch.eye(num_tokens, device=self.device)
+                    attn_heads_mean = attn_heads_mean / attn_heads_mean.sum(dim=-1, keepdim=True)
+                    rollout = torch.matmul(attn_heads_mean, rollout)
+                    
+                cls_attn = rollout[0, 1:]  # [64] patches
+            else:
+                last_attn = attn_weights_list[-1][0].mean(dim=0)  # [65, 65]
+                cls_attn = last_attn[0, 1:]  # [64] patches
+
+            # Reshape 64 patches into 8x8 spatial grid
+            attn_grid = cls_attn.reshape(8, 8).cpu().numpy()
+            
+            # Upsample / bicubic interpolate to full 124x124 resolution
+            attn_map = cv2.resize(attn_grid, (124, 124), interpolation=cv2.INTER_CUBIC)
+            attn_map = np.maximum(attn_map, 0)
+            
+            # Normalize between 0 and 1
+            if attn_map.max() > attn_map.min():
+                attn_map = (attn_map - attn_map.min()) / (attn_map.max() - attn_map.min())
+            else:
+                attn_map = np.zeros_like(attn_map)
+                
+            return attn_map
+
+def overlay_attention_map(original_img, attn_map, alpha=0.45, colormap=cv2.COLORMAP_MAGMA):
+    """
+    original_img: numpy array [124, 124, 3] in RGB format (uint8 0-255)
+    attn_map: numpy array [124, 124] float 0-1
+    """
+    heatmap = cv2.applyColorMap(np.uint8(255 * attn_map), colormap)
+    heatmap = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
+    
+    superimposed_img = np.float32(heatmap) * alpha + np.float32(original_img) * (1 - alpha)
+    superimposed_img = np.uint8(np.clip(superimposed_img, 0, 255))
+    return superimposed_img
+
 if __name__ == "__main__":
     weights_path = os.path.join('weights', 'model.pth')
     if not os.path.exists(weights_path):
@@ -120,6 +180,7 @@ if __name__ == "__main__":
     rrelm_beta = checkpoint['rrelm_beta']
     
     grad_cam = GradCAM(feature_extractor, rrelm_W, rrelm_b, rrelm_beta, device=device)
+    vit_attention = ViTAttentionMap(feature_extractor, device=device)
     
     classes = ['glioma', 'meningioma', 'notumor', 'pituitary']
     test_dataset = BrainTumorDataset(root_dir='dataset', split='test', transform=False)
@@ -135,8 +196,8 @@ if __name__ == "__main__":
         if len(samples_per_class) == 4:
             break
             
-    print("\n--- Generating Grad-CAM Heatmaps for Test Samples ---")
-    fig, axes = plt.subplots(2, 4, figsize=(16, 8))
+    print("\n--- Generating Dual XAI (Grad-CAM & ViT Attention) Visualizations for Test Samples ---")
+    fig, axes = plt.subplots(3, 4, figsize=(16, 12))
     
     for idx, cls_name in enumerate(classes):
         img_path, true_label = samples_per_class[cls_name]
@@ -151,28 +212,35 @@ if __name__ == "__main__":
         tensor_img = np.transpose(tensor_img, (2, 0, 1))
         tensor_img = torch.from_numpy(tensor_img).unsqueeze(0)
         
-        # Generate Grad-CAM heatmap
+        # Generate Grad-CAM heatmap (CNN branch)
         cam, pred_class, conf = grad_cam.generate_heatmap(tensor_img)
         pred_label_name = classes[pred_class]
+        overlaid_cam = overlay_heatmap(processed_img, cam, alpha=0.45)
         
-        # Superimpose heatmap onto preprocessed MRI image
-        overlaid_img = overlay_heatmap(processed_img, cam, alpha=0.45)
+        # Generate ViT Attention map (Transformer branch)
+        attn_map = vit_attention.generate_attention_map(tensor_img)
+        overlaid_attn = overlay_attention_map(processed_img, attn_map, alpha=0.45)
         
-        # Top row: Original Processed MRI
+        # Row 1: Original Preprocessed MRI
         axes[0, idx].imshow(processed_img)
         axes[0, idx].set_title(f"True Class: {cls_name}", fontsize=12, fontweight='bold', color='navy')
         axes[0, idx].axis('off')
         
-        # Bottom row: Grad-CAM Heatmap Overlay
-        axes[1, idx].imshow(overlaid_img)
+        # Row 2: CNN Grad-CAM Heatmap Overlay
+        axes[1, idx].imshow(overlaid_cam)
         color = 'green' if pred_class == true_label else 'red'
-        axes[1, idx].set_title(f"Pred: {pred_label_name}\n({conf*100:.1f}% Conf)", fontsize=11, fontweight='bold', color=color)
+        axes[1, idx].set_title(f"PDSCNN Grad-CAM\nPred: {pred_label_name} ({conf*100:.1f}%)", fontsize=11, fontweight='bold', color=color)
         axes[1, idx].axis('off')
         
-    plt.suptitle("Grad-CAM Interpretability: Tumor Localization Heatmaps", fontsize=16, fontweight='bold', y=0.98)
+        # Row 3: ViT Self-Attention Map Overlay
+        axes[2, idx].imshow(overlaid_attn)
+        axes[2, idx].set_title(f"ViT Attention Rollout\n(64 Patches Global Context)", fontsize=11, fontweight='bold', color='purple')
+        axes[2, idx].axis('off')
+        
+    plt.suptitle("Dual Explainable AI (XAI): PDSCNN Grad-CAM & ViT Self-Attention Maps", fontsize=16, fontweight='bold', y=0.98)
     plt.tight_layout()
     
     output_filename = "gradcam_results.png"
     plt.savefig(output_filename, bbox_inches='tight', dpi=300)
-    print(f"Grad-CAM visual result saved successfully to '{output_filename}'!")
+    print(f"Dual XAI visual result saved successfully to '{output_filename}'!")
     plt.show()
