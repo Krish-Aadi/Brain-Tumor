@@ -136,3 +136,21 @@ Open **http://127.0.0.1:5000** in your browser to use the drag-and-drop Web inte
 * `gradcam_results.png`: Grad-CAM heatmaps showing tumor localization across classes.
 * `confusion_matrix.png`: Confusion matrix heatmap evaluating 1,994 test images.
 * `prediction_result.png`: Individual MRI prediction distribution bar chart and heatmap.
+
+---
+
+## 📜 Dataset Credits & Attributions
+
+We express our gratitude to the following researchers, radiologists, and Kaggle dataset creators for providing open-access brain MRI datasets:
+
+1. **[Brain Tumor MRI Dataset](https://www.kaggle.com/datasets/masoudnickparvar/brain-tumor-mri-dataset)** — Created by **Masoud Nickparvar**
+   - *Primary dataset featuring 7,023 MRI scans across Glioma, Meningioma, Pituitary, and Healthy controls.*
+2. **[Brain Tumor Classification (MRI)](https://www.kaggle.com/datasets/sartajbhuvaji/brain-tumor-classification-mri)** — Created by **Sartaj Bhuvaji, Ankita Kadam et al.**
+   - *Benchmark dataset providing labeled T1-weighted contrast-enhanced brain MRI images.*
+3. **[Brain Tumor MRI Scans](https://www.kaggle.com/datasets/rm1000/brain-tumor-mri-scans)** — Created by **RM1000**
+   - *Multi-center clinical MRI scans used for dataset scaling and generalization testing.*
+4. **[Brain Tumors Dataset](https://www.kaggle.com/datasets/mohammadhossein77/brain-tumors-dataset)** — Created by **Mohammad Hossein**
+   - *Cross-validation MRI scans for class balancing.*
+5. **[Brain Cancer MRI Dataset](https://www.kaggle.com/datasets/orvile/brain-cancer-mri-dataset)** — Created by **Orvile & Kaggle Contributors**
+   - *Open-access brain cancer imaging repository.*
+

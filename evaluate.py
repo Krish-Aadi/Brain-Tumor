@@ -2,6 +2,8 @@ import os
 import torch
 import torch.nn.functional as F
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import classification_report, confusion_matrix
@@ -78,7 +80,7 @@ def evaluate_model():
     cm_filename = "confusion_matrix.png"
     plt.savefig(cm_filename, dpi=300)
     print(f"\nConfusion matrix saved successfully to '{cm_filename}'!")
-    plt.show()
+    plt.close()
 
 if __name__ == "__main__":
     evaluate_model()

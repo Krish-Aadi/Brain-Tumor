@@ -158,6 +158,3 @@ def train_hybrid_model(epochs=80, batch_size=32, lr=5e-4, device='cuda' if torch
 
 if __name__ == "__main__":
     train_hybrid_model(epochs=80, batch_size=32)
-
-
-

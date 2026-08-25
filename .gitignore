@@ -1,3 +1,9 @@
+# Datasets and Temp Downloads
+dataset/
+*.zip
+temp_*
+scratch/
+
 # Virtual Environment
 venv/
 env/
@@ -13,3 +19,4 @@ __pycache__/
 .DS_Store
 .vscode/
 .idea/
+

@@ -1,0 +1,971 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  /* Dark Cyber-Radiology Color Tokens */
+  --bg-void: #03060D;
+  --bg-deep: #060B16;
+  --bg-panel: rgba(13, 22, 40, 0.75);
+  --bg-panel-solid: #0E172A;
+  --bg-card: rgba(20, 32, 57, 0.6);
+
+  --border-glow: rgba(0, 229, 255, 0.25);
+  --border-subtle: rgba(56, 189, 248, 0.12);
+  --border-active: #00E5FF;
+
+  /* Luminous Accents */
+  --cyan-electric: #00E5FF;
+  --cyan-bright: #38BDF8;
+  --cyan-dim: #0284C7;
+  --indigo-bright: #6366F1;
+  --indigo-light: #818CF8;
+  --purple-accent: #A855F7;
+
+  /* Severity & Status Colors */
+  --notumor-color: #10B981;
+  --notumor-glow: rgba(16, 185, 129, 0.3);
+  --glioma-color: #F43F5E;
+  --glioma-glow: rgba(244, 63, 94, 0.35);
+  --meningioma-color: #F59E0B;
+  --meningioma-glow: rgba(245, 158, 11, 0.35);
+  --pituitary-color: #EC4899;
+  --pituitary-glow: rgba(236, 72, 153, 0.35);
+
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --text-cyber: #38BDF8;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-color: var(--bg-void);
+  background-image: 
+    radial-gradient(circle at 15% 20%, rgba(0, 229, 255, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 85% 75%, rgba(99, 102, 241, 0.06) 0%, transparent 45%),
+    linear-gradient(180deg, var(--bg-void) 0%, var(--bg-deep) 100%);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.25rem;
+}
+
+/* Scrollbar customization */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-void);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.2);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cyan-electric);
+}
+
+.dashboard-container {
+  max-width: 1400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Glassmorphic Panel Utility */
+.glass-panel {
+  background: var(--bg-panel);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 18px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-panel:hover {
+  border-color: var(--border-glow);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 229, 255, 0.08);
+}
+
+/* Header */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.15rem 1.75rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.brand-icon-box {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(99, 102, 241, 0.2));
+  border: 1.5px solid var(--cyan-electric);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--cyan-electric);
+  box-shadow: 0 0 25px rgba(0, 229, 255, 0.35);
+}
+
+.brand-icon-box::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 18px;
+  border: 1px dashed var(--cyan-bright);
+  opacity: 0.4;
+  animation: rotateGlow 20s linear infinite;
+}
+
+@keyframes rotateGlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.brand-text h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.7rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, #FFFFFF 30%, var(--cyan-bright) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.brand-text h1 span.tag {
+  font-size: 0.72rem;
+  font-family: 'JetBrains Mono', monospace;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  background: rgba(0, 229, 255, 0.12);
+  color: var(--cyan-electric);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  -webkit-text-fill-color: initial;
+  font-weight: 700;
+}
+
+.brand-text p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 0.15rem;
+}
+
+.header-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.meta-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(14, 23, 42, 0.8);
+  border: 1px solid var(--border-subtle);
+  padding: 0.5rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--notumor-color);
+  box-shadow: 0 0 10px var(--notumor-color);
+  animation: pulseDot 2s infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+/* Dashboard Grid Layout */
+.main-grid {
+  display: grid;
+  grid-template-columns: 310px 1fr 340px;
+  gap: 1.25rem;
+}
+
+@media (max-width: 1200px) {
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Sidebar Panel */
+.sidebar-panel {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.section-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-cyber);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.sample-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.btn-sample {
+  background: rgba(14, 23, 42, 0.7);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.25s ease;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.btn-sample:hover {
+  background: rgba(0, 229, 255, 0.08);
+  border-color: var(--cyan-bright);
+  transform: translateX(4px);
+}
+
+.btn-sample.active {
+  background: rgba(0, 229, 255, 0.15);
+  border-color: var(--cyan-electric);
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+}
+
+.sample-badge {
+  font-size: 0.7rem;
+  font-family: 'JetBrains Mono', monospace;
+  padding: 0.15rem 0.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.sample-badge.glioma { background: var(--glioma-glow); color: var(--glioma-color); }
+.sample-badge.meningioma { background: var(--meningioma-glow); color: var(--meningioma-color); }
+.sample-badge.pituitary { background: var(--pituitary-glow); color: var(--pituitary-color); }
+.sample-badge.notumor { background: var(--notumor-glow); color: var(--notumor-color); }
+
+/* Dropzone Upload */
+.upload-dropzone {
+  border: 2px dashed rgba(56, 189, 248, 0.3);
+  border-radius: 14px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  background: rgba(6, 11, 22, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.upload-dropzone:hover, .upload-dropzone.drag-over {
+  border-color: var(--cyan-electric);
+  background: rgba(0, 229, 255, 0.06);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.15);
+}
+
+.upload-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: rgba(0, 229, 255, 0.1);
+  color: var(--cyan-electric);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+}
+
+.upload-text {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.upload-text strong {
+  color: var(--cyan-electric);
+}
+
+.upload-hint {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* Viewport Canvas Center */
+.viewport-panel {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.viewport-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(6, 11, 22, 0.6);
+  padding: 0.6rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.view-mode-toggle {
+  display: flex;
+  background: rgba(14, 23, 42, 0.9);
+  padding: 0.25rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+}
+
+.view-mode-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.view-mode-btn.active {
+  background: var(--cyan-electric);
+  color: var(--bg-void);
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+}
+
+/* Image Display Area */
+.display-canvas {
+  position: relative;
+  width: 100%;
+  min-height: 440px;
+  background: #050811;
+  border-radius: 14px;
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.side-by-side-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  height: 100%;
+  gap: 1px;
+  background: var(--border-subtle);
+}
+
+@media (max-width: 640px) {
+  .side-by-side-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.img-frame {
+  position: relative;
+  background: #050811;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 380px;
+  padding: 0.75rem;
+  overflow: hidden;
+}
+
+.img-frame img {
+  max-width: 100%;
+  max-height: 380px;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+.img-label {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(6, 11, 22, 0.85);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-cyber);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  backdrop-filter: blur(8px);
+  z-index: 5;
+}
+
+/* Magnifier Loupe */
+.magnifier-loupe {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 2px solid var(--cyan-electric);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.5), inset 0 0 10px rgba(0,0,0,0.5);
+  pointer-events: none;
+  display: none;
+  z-index: 20;
+  background-repeat: no-repeat;
+}
+
+/* Crossfade Split Slider Container */
+.slider-comparison-box {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #050811;
+}
+
+.slider-img-wrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slider-img-wrapper img {
+  max-width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+}
+
+.slider-overlay-layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  clip-path: polygon(0 0, var(--split-pos, 50%) 0, var(--split-pos, 50%) 100%, 0 100%);
+}
+
+.slider-overlay-layer img {
+  max-width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+}
+
+.slider-divider-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--split-pos, 50%);
+  width: 2px;
+  background: var(--cyan-electric);
+  box-shadow: 0 0 15px var(--cyan-electric);
+  z-index: 10;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.slider-divider-line::after {
+  content: '↔';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 32px;
+  background: var(--bg-panel-solid);
+  border: 2px solid var(--cyan-electric);
+  border-radius: 50%;
+  color: var(--cyan-electric);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.range-input-control {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: ew-resize;
+  z-index: 15;
+}
+
+/* Diagnostic Results Right Panel */
+.results-panel {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.verdict-card {
+  background: rgba(6, 11, 22, 0.7);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.85rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.verdict-icon-ring {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(0, 229, 255, 0.1);
+  border: 2px solid var(--cyan-electric);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: var(--cyan-electric);
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.3);
+  transition: all 0.4s ease;
+}
+
+.verdict-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.confidence-display {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--cyan-bright);
+}
+
+.prob-bars-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.prob-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.prob-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+}
+
+.prob-name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.prob-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  color: var(--cyan-bright);
+}
+
+.prob-track {
+  height: 8px;
+  background: rgba(6, 11, 22, 0.8);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+
+.prob-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.prob-fill.glioma { background: var(--glioma-color); box-shadow: 0 0 8px var(--glioma-glow); }
+.prob-fill.meningioma { background: var(--meningioma-color); box-shadow: 0 0 8px var(--meningioma-glow); }
+.prob-fill.pituitary { background: var(--pituitary-color); box-shadow: 0 0 8px var(--pituitary-glow); }
+.prob-fill.notumor { background: var(--notumor-color); box-shadow: 0 0 8px var(--notumor-glow); }
+
+.clinical-tip-box {
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: 12px;
+  padding: 0.85rem;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.clinical-tip-box strong {
+  color: var(--indigo-light);
+}
+
+.action-buttons-group {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-action {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.25s ease;
+  border: none;
+}
+
+.btn-action.reset {
+  background: rgba(14, 23, 42, 0.8);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+}
+
+.btn-action.reset:hover {
+  background: rgba(244, 63, 94, 0.15);
+  border-color: var(--glioma-color);
+  color: var(--glioma-color);
+}
+
+.btn-action.print {
+  background: linear-gradient(135deg, var(--cyan-electric), var(--indigo-bright));
+  color: #03060D;
+  font-weight: 700;
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+}
+
+.btn-action.print:hover {
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Modal Styling */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 6, 13, 0.85);
+  backdrop-filter: blur(12px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.report-modal-content {
+  background: #060B16;
+  border: 1px solid var(--border-glow);
+  border-radius: 20px;
+  max-width: 850px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 2rem;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+  position: relative;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: rgba(14, 23, 42, 0.8);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--cyan-electric);
+}
+
+/* Print Styles */
+@media print {
+  @page {
+    margin: 12mm;
+    size: A4 portrait;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #0F172A !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .dashboard-container {
+    display: none !important;
+  }
+
+  .modal-overlay {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: 99999 !important;
+  }
+
+  .report-modal-content,
+  .report-card {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+    color: #0F172A !important;
+    border: 1px solid #E2E8F0 !important;
+    box-shadow: none !important;
+    padding: 1.5rem !important;
+    margin: 0 !important;
+  }
+
+  .no-print,
+  .modal-close-btn,
+  .close-modal-btn {
+    display: none !important;
+  }
+}
+
+/* Header Training & Testing Report Button */
+.btn-header-report {
+  background: rgba(0, 229, 255, 0.1);
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  color: var(--cyan-electric);
+  padding: 0.5rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.15);
+}
+
+.btn-header-report:hover {
+  background: rgba(0, 229, 255, 0.22);
+  border-color: var(--cyan-electric);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+/* Training Report Large Modal */
+.training-modal-large {
+  max-width: 960px !important;
+}
+
+/* Tab Navigation Buttons */
+.training-tab-btn {
+  background: rgba(14, 23, 42, 0.8);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  padding: 0.55rem 1rem;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all 0.2s ease;
+}
+
+.training-tab-btn:hover {
+  background: rgba(56, 189, 248, 0.1);
+  color: var(--text-primary);
+  border-color: rgba(56, 189, 248, 0.3);
+}
+
+.training-tab-btn.active {
+  background: rgba(0, 229, 255, 0.15);
+  color: var(--cyan-electric);
+  border-color: var(--cyan-electric);
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.25);
+}
+
+/* KPI Metric Cards */
+.kpi-metric-card {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.kpi-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.kpi-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.65rem;
+  font-weight: 800;
+}
+
+.kpi-value.glow-cyan { color: var(--cyan-electric); text-shadow: 0 0 12px rgba(0, 229, 255, 0.3); }
+.kpi-value.glow-green { color: var(--notumor-color); text-shadow: 0 0 12px rgba(16, 185, 129, 0.3); }
+.kpi-value.glow-purple { color: var(--purple-accent); text-shadow: 0 0 12px rgba(168, 85, 247, 0.3); }
+
+.kpi-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* Report Section Container */
+.report-section-box {
+  background: rgba(6, 11, 22, 0.5);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 1.15rem;
+}
+
+/* Confusion Matrix Grid Table */
+.confusion-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 6px;
+}
+
+/* Pipeline Architecture Diagram Nodes */
+.pipeline-node {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 0.75rem 0.85rem;
+  min-width: 140px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.pipeline-node.highlight {
+  border-color: var(--cyan-electric);
+  background: rgba(0, 229, 255, 0.08);
+}
+
+.pipeline-node.highlight-green {
+  border-color: var(--notumor-color);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.node-step {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--cyan-bright);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.node-title {
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--text-primary);
+}
+
+.node-desc {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
