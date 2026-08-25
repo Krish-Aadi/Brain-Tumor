@@ -1,8 +1,8 @@
 # Datasets and Temp Downloads
-dataset/
 *.zip
 temp_*
 scratch/
+
 
 # Virtual Environment
 venv/
