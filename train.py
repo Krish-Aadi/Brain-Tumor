@@ -1,11 +1,19 @@
+import argparse
+import copy
+import os
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import numpy as np
 from dataset_loader import get_dataloaders
 from model import EndToEndModel, RRELM
-import os
-import copy
+
+def get_default_device():
+    if torch.cuda.is_available():
+        return 'cuda'
+    elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
+        return 'mps'
+    return 'cpu'
 
 def mixup_data(x, y, alpha=0.2):
     if alpha > 0:
@@ -21,8 +29,12 @@ def mixup_data(x, y, alpha=0.2):
 def mixup_criterion(criterion, pred, y_a, y_b, lam):
     return lam * criterion(pred, y_a) + (1 - lam) * criterion(pred, y_b)
 
-def train_hybrid_model(epochs=80, batch_size=32, lr=5e-4, device='cuda' if torch.cuda.is_available() else 'cpu'):
-    print(f"Using device: {device}")
+def train_hybrid_model(epochs=80, batch_size=32, lr=5e-4, device=None):
+    if device is None:
+        device = get_default_device()
+        
+    device_label = "Apple Silicon GPU (MPS)" if device == 'mps' else ("NVIDIA GPU (CUDA)" if device == 'cuda' else "CPU")
+    print(f"Using device: {device} [{device_label}]")
     
     # 1. Load Data
     train_loader, test_loader = get_dataloaders(root_dir='dataset', batch_size=batch_size)
@@ -32,7 +44,9 @@ def train_hybrid_model(epochs=80, batch_size=32, lr=5e-4, device='cuda' if torch
     criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
     optimizer = optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-2)
     scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs, eta_min=1e-5)
-    scaler = torch.amp.GradScaler('cuda', enabled=(device == 'cuda'))
+    
+    use_cuda_amp = (device == 'cuda')
+    scaler = torch.amp.GradScaler('cuda', enabled=use_cuda_amp)
     
     print(f"--- Phase 1: Training Feature Extractors with Mixup for {epochs} Epochs ---")
     best_test_acc = 0.0
@@ -52,17 +66,21 @@ def train_hybrid_model(epochs=80, batch_size=32, lr=5e-4, device='cuda' if torch
             # Apply Mixup on 50% of training batches for strong feature regularization
             if np.random.rand() < 0.5:
                 inputs_m, y_a, y_b, lam = mixup_data(inputs, labels, alpha=0.2)
-                with torch.amp.autocast('cuda', enabled=(device == 'cuda')):
+                with torch.amp.autocast('cuda', enabled=use_cuda_amp):
                     logits, _ = model(inputs_m)
                     loss = mixup_criterion(criterion, logits, y_a, y_b, lam)
             else:
-                with torch.amp.autocast('cuda', enabled=(device == 'cuda')):
+                with torch.amp.autocast('cuda', enabled=use_cuda_amp):
                     logits, _ = model(inputs)
                     loss = criterion(logits, labels)
             
-            scaler.scale(loss).backward()
-            scaler.step(optimizer)
-            scaler.update()
+            if use_cuda_amp:
+                scaler.scale(loss).backward()
+                scaler.step(optimizer)
+                scaler.update()
+            else:
+                loss.backward()
+                optimizer.step()
             
             running_loss += loss.item() * inputs.size(0)
             
@@ -81,7 +99,7 @@ def train_hybrid_model(epochs=80, batch_size=32, lr=5e-4, device='cuda' if torch
         with torch.no_grad():
             for t_inputs, t_labels in test_loader:
                 t_inputs, t_labels = t_inputs.to(device), t_labels.to(device)
-                with torch.amp.autocast('cuda', enabled=(device == 'cuda')):
+                with torch.amp.autocast('cuda', enabled=use_cuda_amp):
                     t_logits, _ = model(t_inputs)
                 _, t_pred = torch.max(t_logits, 1)
                 test_total += t_labels.size(0)
@@ -110,7 +128,7 @@ def train_hybrid_model(epochs=80, batch_size=32, lr=5e-4, device='cuda' if torch
         with torch.no_grad():
             for inputs, labels in loader:
                 inputs = inputs.to(device)
-                with torch.amp.autocast('cuda', enabled=(device == 'cuda')):
+                with torch.amp.autocast('cuda', enabled=use_cuda_amp):
                     _, features = model(inputs)
                 all_features.append(features.cpu())
                 all_labels.append(labels)
@@ -144,7 +162,7 @@ def train_hybrid_model(epochs=80, batch_size=32, lr=5e-4, device='cuda' if torch
             
     print(f"\n=== RRELM Final Best Test Accuracy: {best_rrelm_acc:.2f}% (with C={best_c}) ===")
     
-    # 6. Save the trained feature extractor and best RRELM weights
+    # 5. Save the trained feature extractor and best RRELM weights
     print("\n--- Phase 5: Saving Model ---")
     os.makedirs('weights', exist_ok=True)
     
@@ -157,4 +175,11 @@ def train_hybrid_model(epochs=80, batch_size=32, lr=5e-4, device='cuda' if torch
     print("Model saved to weights/model.pth")
 
 if __name__ == "__main__":
-    train_hybrid_model(epochs=80, batch_size=32)
+    parser = argparse.ArgumentParser(description="Train Hybrid PDSCNN-ViT + RRELM Brain Tumor MRI Classifier")
+    parser.add_argument('--epochs', type=int, default=80, help="Number of training epochs (default: 80)")
+    parser.add_argument('--batch_size', type=int, default=32, help="Batch size for dataloaders (default: 32)")
+    parser.add_argument('--lr', type=float, default=5e-4, help="Learning rate (default: 5e-4)")
+    parser.add_argument('--device', type=str, default=None, choices=['cuda', 'mps', 'cpu'], help="Compute device (default: auto-detect GPU)")
+    args = parser.parse_args()
+
+    train_hybrid_model(epochs=args.epochs, batch_size=args.batch_size, lr=args.lr, device=args.device)

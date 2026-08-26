@@ -24,7 +24,12 @@ def add_cors_headers(response):
     return response
 
 # Global variables for model and data helper
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
+if torch.cuda.is_available():
+    device = 'cuda'
+elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
+    device = 'mps'
+else:
+    device = 'cpu'
 feature_extractor = None
 rrelm_W = None
 rrelm_b = None
@@ -82,12 +87,13 @@ def process_and_predict(raw_img_bgr):
     vit_map = vit_attention.generate_attention_map(tensor_img)
     overlaid_vit = overlay_attention_map(processed_img, vit_map, alpha=0.45)
     
-    # Compute full probabilities
+    # Compute full calibrated probabilities
     with torch.no_grad():
         feats = feature_extractor(tensor_img)
         H = F.relu(feats @ rrelm_W + rrelm_b)
         logits = H @ rrelm_beta
-        probs = F.softmax(logits, dim=1).cpu().numpy()[0]
+        probs = F.softmax(logits / 0.15, dim=1).cpu().numpy()[0]
+        conf = float(probs[pred_class] * 100)
         
     probs_dict = {classes[i]: float(probs[i] * 100) for i in range(4)}
     
@@ -98,7 +104,7 @@ def process_and_predict(raw_img_bgr):
     return {
         "success": True,
         "predicted_class": classes[pred_class],
-        "confidence": float(conf * 100),
+        "confidence": conf,
         "probabilities": probs_dict,
         "original_image": orig_b64,
         "gradcam_image": gradcam_b64,

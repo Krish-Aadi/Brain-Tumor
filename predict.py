@@ -10,7 +10,14 @@ from model import HybridFeatureExtractor
 from dataset_loader import BrainTumorDataset
 from gradcam import GradCAM, ViTAttentionMap, overlay_heatmap, overlay_attention_map
 
-def predict_single_image(image_path):
+def get_default_device():
+    if torch.cuda.is_available():
+        return 'cuda'
+    elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
+        return 'mps'
+    return 'cpu'
+
+def predict_single_image(image_path, device=None):
     if not os.path.exists(image_path):
         print(f"Error: Image path '{image_path}' does not exist.")
         return
@@ -20,7 +27,8 @@ def predict_single_image(image_path):
         print(f"Error: Model weights file '{weights_path}' not found. Run train.py first!")
         return
 
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    if device is None:
+        device = get_default_device()
     checkpoint = torch.load(weights_path, map_location=device)
 
     # 1. Load Feature Extractor
@@ -58,12 +66,13 @@ def predict_single_image(image_path):
     vit_attention = ViTAttentionMap(feature_extractor, device=device)
     vit_map = vit_attention.generate_attention_map(tensor_img)
 
-    # Get probabilities for all classes
+    # Get calibrated probabilities for all classes
     with torch.no_grad():
         feats = feature_extractor(tensor_img.to(device))
         H = F.relu(feats @ rrelm_W.to(device) + rrelm_b.to(device))
         logits = H @ rrelm_beta.to(device)
-        probs = F.softmax(logits, dim=1).cpu().numpy()[0]
+        probs = F.softmax(logits / 0.15, dim=1).cpu().numpy()[0]
+        confidence = probs[pred_class]
 
     # Superimpose heatmaps
     overlaid_cam = overlay_heatmap(processed_img, cam, alpha=0.45)

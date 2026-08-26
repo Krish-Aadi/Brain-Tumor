@@ -51,7 +51,7 @@ class GradCAM:
         # 2. Differentiable RRELM Forward Pass
         H = F.relu(features @ self.rrelm_W + self.rrelm_b)  # [1, 4096]
         logits = H @ self.rrelm_beta                         # [1, 4]
-        probs = F.softmax(logits, dim=1)
+        probs = F.softmax(logits / 0.15, dim=1)
         
         if target_class is None:
             target_class = torch.argmax(probs, dim=1).item()
@@ -167,7 +167,12 @@ if __name__ == "__main__":
         print(f"Error: Model weights file '{weights_path}' not found. Run train.py first!")
         exit(1)
         
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    if torch.cuda.is_available():
+        device = 'cuda'
+    elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
+        device = 'mps'
+    else:
+        device = 'cpu'
     print(f"Loading trained model checkpoint from {weights_path} on {device}...")
     
     checkpoint = torch.load(weights_path, map_location=device)

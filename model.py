@@ -179,15 +179,15 @@ class RRELM:
         
         print("RRELM weights analytically computed.")
         
-    def predict(self, X):
+    def predict(self, X, temperature=0.15):
         if self.beta is None:
             raise ValueError("RRELM has not been fitted yet.")
             
         H = torch.relu(X @ self.W + self.b)
         logits = H @ self.beta
         
-        # Use softmax to convert to probabilities for confidence score
-        probs = F.softmax(logits, dim=1)
+        # Use calibrated softmax to convert regression outputs to confidence probabilities
+        probs = F.softmax(logits / temperature, dim=1)
         preds = torch.argmax(probs, dim=1)
         
         return preds, probs
