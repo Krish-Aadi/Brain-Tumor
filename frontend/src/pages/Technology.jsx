@@ -109,7 +109,7 @@ export default function Technology() {
           </div>
 
           <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '1.5rem' }}>
-            While convolutional filters excel at high-frequency local textures, they inherently suffer from a restricted receptive field in early stages. The Vision Transformer branch treats the 224 × 224 MRI as a sequence of discrete patches, calculating all-to-all attention to establish global anatomical symmetry between cerebral hemispheres.
+            While convolutional filters excel at high-frequency local textures, they inherently suffer from a restricted receptive field in early stages. The Vision Transformer branch treats the 124 × 124 MRI as a sequence of discrete patches, calculating all-to-all attention to establish global anatomical symmetry between cerebral hemispheres.
           </p>
 
           <div style={{
@@ -121,7 +121,7 @@ export default function Technology() {
             <div style={{ background: 'var(--bg-main)', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
               <h4 style={{ fontSize: '1rem', marginBottom: '0.5rem', color: 'var(--accent-indigo)' }}>Patch Embedding (16 × 16)</h4>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                Flattens the 224 × 224 MRI into N = (224/16)² = 196 sequential patch tokens, prepended with a learnable <code>[CLS]</code> classification token and 1D positional encodings.
+                Flattens the 124 × 124 MRI into N = (224/16)² = 64 sequential patch tokens, prepended with a learnable <code>[CLS]</code> classification token and 1D positional encodings.
               </p>
             </div>
 
@@ -137,7 +137,7 @@ export default function Technology() {
           </div>
         </section>
 
-        {/* Deep Dive Section 3: 224 x 224 Resolution & Fusion */}
+        {/* Deep Dive Section 3: 124 x 124 Resolution & Fusion */}
         <section id="fusion" className="card-panel" style={{ marginBottom: '3rem', background: 'var(--bg-surface)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
             <div style={{
@@ -154,12 +154,12 @@ export default function Technology() {
             </div>
             <div>
               <div style={{ fontSize: '0.8rem', color: '#ec4899', fontWeight: 700 }}>REPRESENTATION INTEGRATION</div>
-              <h2 style={{ fontSize: '1.6rem' }}>224 × 224 Input & Concatenated Feature Fusion</h2>
+              <h2 style={{ fontSize: '1.6rem' }}>124 × 124 Input & Concatenated Feature Fusion</h2>
             </div>
           </div>
 
           <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '1.5rem' }}>
-            The current proposed configuration adopts <strong>224 × 224 MRI input resolution</strong>. Compared to smaller downscaled resolutions (e.g. 124 × 124), the 224 × 224 spatial canvas provides substantially richer sub-millimeter anatomical detail, enabling cleaner patch boundaries in ViT and finer spatial gradients in PDSCNN.
+            The current proposed configuration adopts <strong>124 × 124 MRI input resolution</strong>. Compared to smaller downscaled resolutions (e.g. 124 × 124), the 124 × 124 spatial canvas provides substantially richer sub-millimeter anatomical detail, enabling cleaner patch boundaries in ViT and finer spatial gradients in PDSCNN.
           </p>
 
           {/* Fusion Visual Formula */}

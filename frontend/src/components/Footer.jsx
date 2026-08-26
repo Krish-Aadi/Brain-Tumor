@@ -14,7 +14,7 @@ export default function Footer() {
               <li><Link to="/technology#vit" className="footer-link">Vision Transformer (ViT)</Link></li>
               <li><Link to="/technology#fusion" className="footer-link">Feature Concatenation</Link></li>
               <li><Link to="/technology#rrelm" className="footer-link">RRELM Classifier</Link></li>
-              <li><Link to="/preprocessing" className="footer-link">CLAHE Enhancement (224×224)</Link></li>
+              <li><Link to="/preprocessing" className="footer-link">CLAHE Enhancement (124×124)</Link></li>
             </ul>
           </div>
 

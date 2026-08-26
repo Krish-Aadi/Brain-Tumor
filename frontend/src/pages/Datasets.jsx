@@ -20,7 +20,7 @@ export default function Datasets() {
       source: 'Kaggle Dataset Repository',
       scanCount: '7,023 T1 MRI Scans',
       classes: '4 Classes (Glioma, Meningioma, Pituitary, Healthy)',
-      resolution: 'Standardized 224 × 224 CLAHE',
+      resolution: 'Standardized 124 × 124 CLAHE',
       description: 'Primary benchmark dataset containing curated high-resolution axial and coronal cranial MRI scans across 4 pathological states with robust anatomical margin contrast.',
       downloadUrl: 'https://www.kaggle.com/datasets/masoudnickparvar/brain-tumor-mri-dataset',
       badge: 'Primary Benchmark'
@@ -38,11 +38,11 @@ export default function Datasets() {
     },
     {
       id: 'merged-cohort',
-      title: 'NeuroScan Standardized 13,197 Cohort',
+      title: 'NeuroScan Standardized 13,994 Cohort',
       source: 'Harmonized Research Pipeline',
-      scanCount: '13,197 Total Scans (12,000 Train + 1,197 Test)',
+      scanCount: '13,994 Total Scans (12,000 Train + 1,994 Test)',
       classes: '100% Balanced (3,000 scans per class in training)',
-      resolution: 'CLAHE Enhanced (224 × 224 × 3)',
+      resolution: 'CLAHE Enhanced (124 × 124 × 3)',
       description: 'Fully deduplicated, contrast-normalized, and class-balanced dataset produced by our preprocessing pipeline with zero train-test data leakage.',
       downloadUrl: 'https://www.kaggle.com/datasets/masoudnickparvar/brain-tumor-mri-dataset',
       badge: 'Balanced & Deduplicated',
@@ -173,7 +173,7 @@ export default function Datasets() {
             </h3>
           </div>
           <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1.25rem' }}>
-            You can automatically fetch, extract, and balance the complete 13,197 MRI dataset using the repository's built-in Python helper script:
+            You can automatically fetch, extract, and balance the complete 13,994 MRI dataset using the repository's built-in Python helper script:
           </p>
           <div style={{
             background: 'var(--bg-card)',

@@ -129,7 +129,7 @@ export default function History() {
                         {item.confidence}%
                       </td>
                       <td style={{ padding: '1rem 1.25rem', fontFamily: 'JetBrains Mono', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-                        {item.resolution || '224 × 224'}
+                        {item.resolution || '124 × 124'}
                       </td>
                       <td style={{ padding: '1rem 1.25rem' }}>
                         <Link to="/analyze" className="btn btn-secondary btn-sm">

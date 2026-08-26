@@ -3,7 +3,7 @@ import { Loader2, CheckCircle2, Cpu, Sparkles, Binary, Sliders, Eye } from 'luci
 
 const STAGES = [
   { id: 1, label: 'Uploading & Validating Scan', icon: Sliders },
-  { id: 2, label: 'CLAHE Contrast Normalization (224 × 224)', icon: Sliders },
+  { id: 2, label: 'CLAHE Contrast Normalization (124 × 124)', icon: Sliders },
   { id: 3, label: 'PDSCNN 256-d Local Feature Extraction', icon: Cpu },
   { id: 4, label: 'Vision Transformer Patch Self-Attention', icon: Sparkles },
   { id: 5, label: 'Concatenated Feature Fusion (384-d)', icon: Binary },

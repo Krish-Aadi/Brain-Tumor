@@ -141,7 +141,7 @@ export default function AttentionMapViewer({ originalImage, vitAttentionImage, p
           }}
         >
           <Grid size={14} />
-          <span>Toggle 14×14 Patch Grid (224×224)</span>
+          <span>Toggle 8×8 Patch Grid (64 Patches) (124×124)</span>
         </button>
 
         <span style={{ fontSize: '0.75rem', color: 'var(--accent-indigo)', fontFamily: 'JetBrains Mono' }}>

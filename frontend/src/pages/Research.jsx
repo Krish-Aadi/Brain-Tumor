@@ -6,7 +6,7 @@ const PIPELINE_STAGES = [
   { step: '02', title: 'Dataset Verification', desc: 'Validating slice formats, channel depths, and DICOM metadata consistency.' },
   { step: '03', title: 'Duplicate Detection', desc: 'Hashing and perceptual comparison to eliminate duplicate scans across splits.' },
   { step: '04', title: 'Label Harmonization', desc: 'Aligning multi-source terminology into 4 standard categories.' },
-  { step: '05', title: 'CLAHE Preprocessing', desc: 'Standardizing intensity histograms and resizing scans to 224 × 224 resolution.' },
+  { step: '05', title: 'CLAHE Preprocessing', desc: 'Standardizing intensity histograms and resizing scans to 124 × 124 resolution.' },
   { step: '06', title: 'Patient-Wise Splitting', desc: 'Isolating distinct patient IDs across train/validation/test to prevent data leakage.' },
   { step: '07', title: 'Ablation & Evaluation', desc: 'Benchmarking performance via precision, recall, F1, and confusion matrices.' },
 ];

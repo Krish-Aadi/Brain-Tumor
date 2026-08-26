@@ -97,7 +97,7 @@ export default function PredictionCard({ result, onReset }) {
         }}>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '4px' }}>INPUT RESOLUTION</div>
           <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', fontFamily: 'JetBrains Mono', marginTop: '4px' }}>
-            224 × 224
+            124 × 124
           </div>
         </div>
 

@@ -111,8 +111,11 @@ def process_and_predict(raw_img_bgr):
         "vit_attention_image": vit_b64
     }
 
-@app.route('/')
-def index():
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_frontend(path):
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
     dist_index = os.path.join(app.static_folder, 'index.html')
     if os.path.exists(dist_index):
         return send_from_directory(app.static_folder, 'index.html')

@@ -4,13 +4,13 @@ import { Brain, Sliders, Cpu, Sparkles, Binary, ShieldCheck, Layers, Info, Check
 const NODES = {
   mri: {
     id: 'mri',
-    title: 'Raw MRI Input (224 × 224)',
+    title: 'Raw MRI Input (124 × 124)',
     type: 'Input Acquisition',
     accent: 'var(--accent-cyan)',
     formula: 'X ∈ ℝ²²⁴ ˣ ²²⁴ ˣ ³',
-    summary: 'The network accepts high-resolution T1-weighted contrast-enhanced brain MRI scans resized to standard 224 × 224 pixel dimension.',
+    summary: 'The network accepts high-resolution T1-weighted contrast-enhanced brain MRI scans resized to standard 124 × 124 pixel dimension.',
     details: [
-      'Standardized 224 × 224 spatial resolution preserves micro-structures and lesion borders.',
+      'Standardized 124 × 124 spatial resolution preserves micro-structures and lesion borders.',
       'Supports axial, sagittal, and coronal cranial planes.',
       '3-channel RGB representation compatible with hybrid convolutional and patch transformer backbones.'
     ]
@@ -49,7 +49,7 @@ const NODES = {
     formula: 'Attention(Q, K, V) = softmax(Q·Kᵀ / √d_k) · V',
     summary: 'Processes non-overlapping image patches to capture long-range semantic dependencies and anatomical contextual symmetry throughout the brain.',
     details: [
-      'Splits 224 × 224 MRI into 16 × 16 pixel patches with 1D learnable position embeddings.',
+      'Splits 124 × 124 MRI into 16 × 16 pixel patches with 1D learnable position embeddings.',
       '8 multi-head self-attention (MHSA) transformer encoder blocks.',
       'Produces a 128-dimensional global contextual representation vector F_global.'
     ]
@@ -119,7 +119,7 @@ export default function ArchitectureDiagram() {
               <Brain size={18} style={{ color: 'var(--accent-cyan)' }} />
               <div>
                 <div style={{ fontSize: '0.9rem', fontWeight: 700 }}>Raw Brain MRI Scan</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Input Resolution: 224 × 224 × 3</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Input Resolution: 124 × 124 × 3</div>
               </div>
             </div>
             <ChevronRight size={16} style={{ color: 'var(--text-muted)' }} />

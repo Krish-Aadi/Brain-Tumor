@@ -111,7 +111,7 @@ export const apiService = {
       return {
         success: true,
         architecture: "Parallel CNN (PDSCNN) + Vision Transformer (ViT) + RRELM",
-        input_resolution: "224 × 224",
+        input_resolution: "124 × 124",
         classes: ['glioma', 'meningioma', 'notumor', 'pituitary'],
         overall_accuracy: 98.00,
         macro_f1: 0.9774,
@@ -154,7 +154,7 @@ export const apiService = {
           predicted_class: 'glioma',
           confidence: 94.8,
           status: 'Completed',
-          resolution: '224 × 224',
+          resolution: '124 × 124',
           model: 'PDSCNN + ViT + RRELM'
         },
         {
@@ -164,7 +164,7 @@ export const apiService = {
           predicted_class: 'meningioma',
           confidence: 93.4,
           status: 'Completed',
-          resolution: '224 × 224',
+          resolution: '124 × 124',
           model: 'PDSCNN + ViT + RRELM'
         },
         {
@@ -174,7 +174,7 @@ export const apiService = {
           predicted_class: 'notumor',
           confidence: 99.4,
           status: 'Completed',
-          resolution: '224 × 224',
+          resolution: '124 × 124',
           model: 'PDSCNN + ViT + RRELM'
         },
         {
@@ -184,7 +184,7 @@ export const apiService = {
           predicted_class: 'pituitary',
           confidence: 96.2,
           status: 'Completed',
-          resolution: '224 × 224',
+          resolution: '124 × 124',
           model: 'PDSCNN + ViT + RRELM'
         }
       ];

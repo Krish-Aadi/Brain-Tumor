@@ -47,7 +47,7 @@ export default function DatasetMiniBlock({ className = '', style = {} }) {
               Open Research Data
             </div>
             <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-              Curated Brain MRI Datasets (13,197 Scans)
+              Curated Brain MRI Datasets (13,994 Scans)
             </h3>
           </div>
         </div>

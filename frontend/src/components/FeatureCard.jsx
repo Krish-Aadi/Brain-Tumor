@@ -11,7 +11,7 @@ const FEATURES = [
   {
     icon: Maximize2,
     title: "Local + Global Representation",
-    description: "PDSCNN captures fine boundary textures and micro-structures while ViT models long-range spatial context across 224 × 224 patches.",
+    description: "PDSCNN captures fine boundary textures and micro-structures while ViT models long-range spatial context across 124 × 124 patches.",
     accent: "var(--accent-indigo)"
   },
   {

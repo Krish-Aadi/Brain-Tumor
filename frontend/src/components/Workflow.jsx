@@ -12,7 +12,7 @@ const STEPS = [
   {
     num: "02",
     title: "CLAHE Preprocessing",
-    desc: "Resize to 224 × 224 resolution and apply Contrast-Limited Adaptive Histogram Equalization.",
+    desc: "Resize to 124 × 124 resolution and apply Contrast-Limited Adaptive Histogram Equalization.",
     icon: Sliders,
     accent: "var(--accent-teal)"
   },

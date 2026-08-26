@@ -4,10 +4,10 @@ import { Sliders, Maximize2, Sparkles, CheckCircle2, ArrowDown, FileCheck } from
 
 const PIPELINE_NODES = [
   { step: '01', title: 'Input Image Validation', desc: 'Verify RGB/Grayscale encoding, pixel bit-depth, and dimension bounds.' },
-  { step: '02', title: 'Bilinear Resizing to 224 × 224', desc: 'Standardize spatial dimensions to support 16×16 patch tokenization.' },
+  { step: '02', title: 'Bilinear Resizing to 124 × 124', desc: 'Standardize spatial dimensions to support 16×16 patch tokenization.' },
   { step: '03', title: 'CLAHE Histogram Equalization', desc: 'Localized adaptive contrast equalization with clipLimit=2.0 on 8×8 tiles.' },
   { step: '04', title: 'Channel Normalization', desc: 'Scale pixel values to [0, 1] range to stabilize neural activations.' },
-  { step: '05', title: 'Dual-Stream Input Dispatch', desc: 'Pass preprocessed tensor [B, 3, 224, 224] to PDSCNN & ViT backbones.' }
+  { step: '05', title: 'Dual-Stream Input Dispatch', desc: 'Pass preprocessed tensor [B, 3, 124, 124] to PDSCNN & ViT backbones.' }
 ];
 
 export default function Preprocessing() {
@@ -18,7 +18,7 @@ export default function Preprocessing() {
           <div className="section-tag">Image Normalization & Contrast</div>
           <h1 className="section-title">Data Preprocessing & CLAHE Enhancement</h1>
           <p className="section-subtitle">
-            Ensuring anatomical boundary clarity through 224 × 224 standardization and localized adaptive histogram equalization.
+            Ensuring anatomical boundary clarity through 124 × 124 standardization and localized adaptive histogram equalization.
           </p>
         </div>
       </div>

@@ -35,7 +35,7 @@ export default function Analyze() {
         filename: file.name,
         predicted_class: data.predicted_class,
         confidence: data.confidence,
-        resolution: '224 × 224',
+        resolution: '124 × 124',
         model: 'PDSCNN + ViT + RRELM'
       });
     } catch (err) {

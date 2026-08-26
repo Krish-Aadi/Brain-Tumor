@@ -41,7 +41,7 @@ export default function HowItWorks() {
               <h3 style={{ fontSize: '1.3rem' }}>CLAHE Contrast Normalization</h3>
             </div>
             <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.65 }}>
-              Raw MRI scans frequently suffer from scanner-specific bias fields and low soft-tissue contrast. Contrast-Limited Adaptive Histogram Equalization (CLAHE) is computed across localized 8×8 contextual tiles with a clip limit of 2.0. The output is standardized to 224 × 224 spatial resolution and normalized to [0, 1] floating-point tensors.
+              Raw MRI scans frequently suffer from scanner-specific bias fields and low soft-tissue contrast. Contrast-Limited Adaptive Histogram Equalization (CLAHE) is computed across localized 8×8 contextual tiles with a clip limit of 2.0. The output is standardized to 124 × 124 spatial resolution and normalized to [0, 1] floating-point tensors.
             </p>
           </div>
 
@@ -55,7 +55,7 @@ export default function HowItWorks() {
             </p>
             <ul style={{ paddingLeft: '1.5rem', marginTop: '0.75rem', fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
               <li><strong>PDSCNN Branch:</strong> Applies 4 hierarchical depthwise separable convolutional stages, producing a 256-dimensional local spatial feature vector.</li>
-              <li><strong>ViT Branch:</strong> Partitions the 224 × 224 image into 16 × 16 patches (196 tokens), passing them through 8 multi-head self-attention transformer blocks to extract a 128-dimensional global contextual vector.</li>
+              <li><strong>ViT Branch:</strong> Partitions the 124 × 124 image into 16 × 16 patches (64 tokens), passing them through 8 multi-head self-attention transformer blocks to extract a 128-dimensional global contextual vector.</li>
             </ul>
           </div>
 

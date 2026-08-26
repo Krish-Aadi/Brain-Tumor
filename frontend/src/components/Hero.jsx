@@ -99,7 +99,7 @@ export default function Hero({ onStartDetectionClick }) {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Activity size={16} style={{ color: 'var(--accent-blue)' }} />
-            <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>224 × 224 CLAHE</span>
+            <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>124 × 124 CLAHE</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <ShieldCheck size={16} style={{ color: 'var(--accent-indigo)' }} />

@@ -487,7 +487,7 @@ export default function TrainingReportModal({ isOpen, onClose, reportData }) {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.85rem' }}>
                 <div style={{ background: 'rgba(15, 23, 42, 0.8)', border: '1px solid var(--border-subtle)', padding: '0.75rem', borderRadius: '10px' }}>
                   <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Combined Scans</div>
-                  <div style={{ fontSize: '1.35rem', fontFamily: 'JetBrains Mono', fontWeight: 800, color: 'var(--cyan-electric)' }}>13,197 Scans</div>
+                  <div style={{ fontSize: '1.35rem', fontFamily: 'JetBrains Mono', fontWeight: 800, color: 'var(--cyan-electric)' }}>13,994 Scans</div>
                   <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Across 5 Open Datasets</div>
                 </div>
                 <div style={{ background: 'rgba(15, 23, 42, 0.8)', border: '1px solid var(--border-subtle)', padding: '0.75rem', borderRadius: '10px' }}>

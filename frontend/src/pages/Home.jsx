@@ -104,7 +104,7 @@ export default function Home() {
 
           <div className="home-highlight-pill">
             <Activity size={16} style={{ color: '#818cf8' }} />
-            <span>224 × 224 CLAHE</span>
+            <span>124 × 124 CLAHE</span>
           </div>
 
           <div className="home-highlight-pill">

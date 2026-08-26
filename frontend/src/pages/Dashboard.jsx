@@ -153,7 +153,7 @@ export default function Dashboard() {
                   <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>INPUT CONFIGURATION</span>
                   <Activity size={18} style={{ color: 'var(--accent-teal)' }} />
                 </div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 800, fontFamily: 'JetBrains Mono' }}>224 × 224</div>
+                <div style={{ fontSize: '1.1rem', fontWeight: 800, fontFamily: 'JetBrains Mono' }}>124 × 124</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
                   CLAHE Enhanced RGB Tensors
                 </div>
@@ -270,7 +270,7 @@ export default function Dashboard() {
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.35rem' }}>
                   Input Resolution
                 </label>
-                <input type="text" value="224 × 224 (Standard RGB)" disabled style={{ width: '100%', opacity: 0.8 }} />
+                <input type="text" value="124 × 124 (Standard RGB)" disabled style={{ width: '100%', opacity: 0.8 }} />
               </div>
 
               <div>

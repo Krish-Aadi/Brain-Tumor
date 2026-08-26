@@ -197,7 +197,7 @@ export default function CLAHEComparison() {
 
           <div className="card-panel" style={{ textAlign: 'center', background: 'var(--bg-surface)', borderColor: 'var(--accent-cyan)' }}>
             <div style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--accent-cyan)' }}>
-              2. Post-CLAHE Enhanced (224 × 224)
+              2. Post-CLAHE Enhanced (124 × 124)
             </div>
             <div style={{
               aspectRatio: '1/1',
@@ -233,7 +233,7 @@ export default function CLAHEComparison() {
       }}>
         <Info size={18} style={{ color: 'var(--accent-cyan)', flexShrink: 0, marginTop: '2px' }} />
         <div>
-          <strong>Why 224 × 224 + CLAHE?</strong> Brain MRI scans exhibit subtle grayscale gradients between healthy white/gray matter and neoplastic tissue. CLAHE operates on localized 8×8 tiles, maximizing lesion boundary definition without noise blooming, while 224 × 224 resolution provides optimal spatial fidelity for patch tokenization.
+          <strong>Why 124 × 124 + CLAHE?</strong> Brain MRI scans exhibit subtle grayscale gradients between healthy white/gray matter and neoplastic tissue. CLAHE operates on localized 8×8 tiles, maximizing lesion boundary definition without noise blooming, while 124 × 124 resolution provides optimal spatial fidelity for patch tokenization.
         </div>
       </div>
     </div>
