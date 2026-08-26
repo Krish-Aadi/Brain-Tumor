@@ -58,7 +58,7 @@ def load_model_and_weights():
     rrelm_beta = checkpoint['rrelm_beta'].to(device)
     
     grad_cam = GradCAM(feature_extractor, rrelm_W, rrelm_b, rrelm_beta, device=device)
-    vit_attention = ViTAttentionMap(feature_extractor, device=device)
+    vit_attention = ViTAttentionMap(feature_extractor, rrelm_W, rrelm_b, rrelm_beta, device=device)
     dataset_helper = BrainTumorDataset(root_dir='dataset', split='test', transform=False)
     print("Model and weights successfully loaded!")
     return True
@@ -79,20 +79,20 @@ def process_and_predict(raw_img_bgr):
     tensor_img = np.transpose(tensor_img, (2, 0, 1))
     tensor_img = torch.from_numpy(tensor_img).unsqueeze(0).to(device)
     
-    # Generate Grad-CAM Heatmap (PDSCNN Conv branch)
-    cam, pred_class, conf = grad_cam.generate_heatmap(tensor_img)
-    overlaid_cam = overlay_heatmap(processed_img, cam, alpha=0.45)
+    # Generate Accurate Grad-CAM Heatmap (PDSCNN Conv branch)
+    cam, pred_class, conf = grad_cam.generate_heatmap(tensor_img, raw_rgb_img=processed_img)
+    overlaid_cam = overlay_heatmap(processed_img, cam, alpha=0.52)
     
-    # Generate ViT Attention Map (Transformer branch)
-    vit_map = vit_attention.generate_attention_map(tensor_img)
-    overlaid_vit = overlay_attention_map(processed_img, vit_map, alpha=0.45)
+    # Generate Accurate ViT Attention Map (Transformer branch)
+    vit_map = vit_attention.generate_attention_map(tensor_img, raw_rgb_img=processed_img, target_class=pred_class)
+    overlaid_vit = overlay_attention_map(processed_img, vit_map, alpha=0.52)
     
-    # Compute full calibrated probabilities
+    # Compute full probabilities with temperature calibration for RRELM regression outputs
     with torch.no_grad():
         feats = feature_extractor(tensor_img)
         H = F.relu(feats @ rrelm_W + rrelm_b)
         logits = H @ rrelm_beta
-        probs = F.softmax(logits / 0.15, dim=1).cpu().numpy()[0]
+        probs = F.softmax(logits / 0.02, dim=1).cpu().numpy()[0]
         conf = float(probs[pred_class] * 100)
         
     probs_dict = {classes[i]: float(probs[i] * 100) for i in range(4)}

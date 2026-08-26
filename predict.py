@@ -87,7 +87,7 @@ def predict_single_image(image_path, device=None):
     print(f"Confidence   : {confidence * 100:.2f}%\n")
     print("Class Probabilities:")
     for cls_name, prob in zip(classes, probs):
-        bar = "█" * int(prob * 20)
+        bar = "#" * int(prob * 20)
         print(f"  - {cls_name:<12}: {prob*100:5.2f}% {bar}")
     print("="*45)
 
