@@ -519,60 +519,6 @@ export default function MetricsDashboard() {
         </div>
       </div>
 
-      {/* Base Paper vs Proposed Framework Comparison Table */}
-      <div className="card-panel" style={{ background: 'var(--bg-surface)', padding: '1.75rem', marginBottom: '2.5rem' }}>
-        <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.35rem' }}>
-          ⚖️ Base Paper Benchmark Comparison (Nature Scientific Reports vs Proposed)
-        </h3>
-        <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>
-          Direct side-by-side technical comparison showing how our proposed framework expands upon the base paper.
-        </p>
-
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
-            <thead>
-              <tr style={{ borderBottom: '2px solid var(--border-medium)', background: 'var(--bg-main)' }}>
-                <th style={{ padding: '0.75rem 1rem', width: '22%' }}>Evaluation Dimension</th>
-                <th style={{ padding: '0.75rem 1rem', width: '38%' }}>Base Paper (Scientific Reports, 2025)</th>
-                <th style={{ padding: '0.75rem 1rem', width: '40%', color: 'var(--accent-cyan)' }}>Our Proposed Framework (NeuroScan AI)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                <td style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>5-Fold CV Accuracy</td>
-                <td style={{ padding: '0.75rem 1rem', fontFamily: 'JetBrains Mono', fontWeight: 700 }}>99.22%</td>
-                <td style={{ padding: '0.75rem 1rem', fontFamily: 'JetBrains Mono', fontWeight: 800, color: 'var(--accent-cyan)' }}>98.05% (±0.16%) [Multi-Hospital Tested]</td>
-              </tr>
-              <tr style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                <td style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>Mean Precision / Recall</td>
-                <td style={{ padding: '0.75rem 1rem', fontFamily: 'JetBrains Mono' }}>99.35% / 99.30%</td>
-                <td style={{ padding: '0.75rem 1rem', fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--color-notumor)' }}>98.06% Precision / 98.05% Recall</td>
-              </tr>
-              <tr style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                <td style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>Dataset Scale</td>
-                <td style={{ padding: '0.75rem 1rem' }}>3,264 - 7,023 scans (Single Kaggle benchmark)</td>
-                <td style={{ padding: '0.75rem 1rem', fontWeight: 700, color: 'var(--text-primary)' }}>13,994 scans (5 Multi-Center sources combined)</td>
-              </tr>
-              <tr style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                <td style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>Feature Backbone</td>
-                <td style={{ padding: '0.75rem 1rem' }}>PDSCNN only (256-d local spatial filters)</td>
-                <td style={{ padding: '0.75rem 1rem', fontWeight: 700, color: 'var(--accent-cyan)' }}>Hybrid PDSCNN (256d) + Vision Transformer (128d) = 384d</td>
-              </tr>
-              <tr style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                <td style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>Classifier Architecture</td>
-                <td style={{ padding: '0.75rem 1rem' }}>RRELM</td>
-                <td style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>RRELM (4,096 randomized hidden nodes, C=500.0)</td>
-              </tr>
-              <tr style={{ background: 'rgba(6, 182, 212, 0.05)' }}>
-                <td style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>Explainable AI (XAI)</td>
-                <td style={{ padding: '0.75rem 1rem' }}>SHAP (Global numeric tabular ranking)</td>
-                <td style={{ padding: '0.75rem 1rem', fontWeight: 700, color: 'var(--accent-cyan)' }}>Dual-Branch Visual Heatmaps (Multi-Scale Grad-CAM + ViT Attention + Skull Masking)</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
       {/* View Switcher Tabs */}
       <div style={{
         display: 'flex',

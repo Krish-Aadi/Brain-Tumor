@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  BrainCircuit, 
-  Zap, 
-  ShieldCheck, 
-  Stethoscope, 
+import {
+  BrainCircuit,
+  Zap,
+  ShieldCheck,
+  Stethoscope,
   ArrowRight,
   Target,
   Layers,

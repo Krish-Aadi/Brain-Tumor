@@ -131,7 +131,7 @@ export default function TrainingReportModal({ isOpen, onClose, reportData }) {
             onClick={() => setActiveTab('basepaper')}
           >
             <CheckCircle2 size={15} />
-            <span>Base Paper & 5-Fold CV</span>
+            <span>5-Fold Cross Validation</span>
           </button>
           <button
             className={`training-tab-btn ${activeTab === 'confusion' ? 'active' : ''}`}
@@ -320,56 +320,6 @@ export default function TrainingReportModal({ isOpen, onClose, reportData }) {
               </div>
             </div>
 
-            {/* Base Paper vs Proposed Model Benchmark Comparison Table */}
-            <div className="report-section-box">
-              <div className="section-title">
-                <Award size={16} />
-                <span>Base Paper Benchmark Comparison (Nature Scientific Reports vs Proposed)</span>
-              </div>
-              <div style={{ marginTop: '0.75rem', overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', textAlign: 'left' }}>
-                  <thead>
-                    <tr style={{ borderBottom: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}>
-                      <th style={{ padding: '0.5rem', width: '22%' }}>Evaluation Metric</th>
-                      <th style={{ padding: '0.5rem', width: '38%' }}>Base Paper (Scientific Reports, 2025)</th>
-                      <th style={{ padding: '0.5rem', width: '40%', color: 'var(--cyan-electric)' }}>Proposed (NeuroScan AI)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr style={{ borderBottom: '1px solid rgba(56, 189, 248, 0.08)' }}>
-                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>5-Fold CV Accuracy</td>
-                      <td style={{ padding: '0.6rem 0.5rem', fontFamily: 'JetBrains Mono', fontWeight: 700 }}>99.22%</td>
-                      <td style={{ padding: '0.6rem 0.5rem', fontFamily: 'JetBrains Mono', fontWeight: 800, color: 'var(--cyan-electric)' }}>98.05% (±0.16%) [Multi-Center Benchmark]</td>
-                    </tr>
-                    <tr style={{ borderBottom: '1px solid rgba(56, 189, 248, 0.08)' }}>
-                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>Mean Precision / Recall</td>
-                      <td style={{ padding: '0.6rem 0.5rem', fontFamily: 'JetBrains Mono' }}>99.35% / 99.30%</td>
-                      <td style={{ padding: '0.6rem 0.5rem', fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--notumor-color)' }}>98.06% Precision / 98.05% Recall</td>
-                    </tr>
-                    <tr style={{ borderBottom: '1px solid rgba(56, 189, 248, 0.08)' }}>
-                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>Dataset Scale</td>
-                      <td style={{ padding: '0.6rem 0.5rem' }}>3,264 - 7,023 scans (Single Kaggle source)</td>
-                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>13,994 scans (5 Multi-Center sources combined)</td>
-                    </tr>
-                    <tr style={{ borderBottom: '1px solid rgba(56, 189, 248, 0.08)' }}>
-                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>Feature Extraction Backbone</td>
-                      <td style={{ padding: '0.6rem 0.5rem' }}>PDSCNN only (256-d local spatial filters)</td>
-                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 700, color: 'var(--cyan-electric)' }}>Hybrid PDSCNN (256-d) + Vision Transformer (128-d) = 384-d</td>
-                    </tr>
-                    <tr style={{ borderBottom: '1px solid rgba(56, 189, 248, 0.08)' }}>
-                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>Classifier Head</td>
-                      <td style={{ padding: '0.6rem 0.5rem' }}>RRELM</td>
-                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 700 }}>RRELM (4,096 randomized hidden nodes, C=500.0)</td>
-                    </tr>
-                    <tr>
-                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>Explainable AI (XAI)</td>
-                      <td style={{ padding: '0.6rem 0.5rem' }}>SHAP (Tabular feature ranking)</td>
-                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 700, color: 'var(--cyan-electric)' }}>Dual-Branch Visual XAI (Grad-CAM + ViT Patch Rollout + Skull Masking)</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
           </div>
         )}
 
