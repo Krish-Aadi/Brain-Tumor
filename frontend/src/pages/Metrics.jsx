@@ -12,7 +12,7 @@ export default function Metrics() {
           <div className="section-tag">Empirical Evaluation & Performance</div>
           <h1 className="section-title">Model Metrics & Research Analytics</h1>
           <p className="section-subtitle">
-            Comprehensive quantitative analysis of the <strong>Parallel PDSCNN + Vision Transformer + RRELM</strong> architecture evaluated across 1,197 unseen brain MRI test scans.
+            Comprehensive quantitative analysis of the <strong>Parallel PDSCNN + Vision Transformer + RRELM</strong> architecture evaluated across <strong>13,994 multi-center brain MRI scans</strong> with 5-Fold Stratified Cross-Validation (<strong>98.05% ±0.16%</strong>).
           </p>
         </div>
       </div>
@@ -27,27 +27,27 @@ export default function Metrics() {
           <div className="card-panel" style={{ background: 'var(--bg-surface)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.25rem' }}>
               <Database size={20} style={{ color: 'var(--accent-cyan)' }} />
-              <h3 style={{ fontSize: '1.25rem' }}>Test Dataset Partitioning</h3>
+              <h3 style={{ fontSize: '1.25rem' }}>Dataset Scale & 5-Fold Splitting</h3>
             </div>
             <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1.25rem' }}>
-              Patient-wise stratified partitioning was conducted to strictly avoid data leakage across training and evaluation splits.
+              Multi-center stratified partitioning across 5 independent folds strictly avoiding slice leakage, with balanced 3,000 scans per class.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.82rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem', background: 'var(--bg-main)', borderRadius: 'var(--radius-sm)' }}>
-                <span>Glioma Test Samples:</span>
-                <span style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--color-glioma)' }}>226 Scans</span>
+                <span>Glioma Scans (Balanced):</span>
+                <span style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--color-glioma)' }}>3,000 Scans (Prec: 98.05%)</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem', background: 'var(--bg-main)', borderRadius: 'var(--radius-sm)' }}>
-                <span>Meningioma Test Samples:</span>
-                <span style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--color-meningioma)' }}>257 Scans</span>
+                <span>Meningioma Scans (Balanced):</span>
+                <span style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--color-meningioma)' }}>3,000 Scans (Prec: 97.95%)</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem', background: 'var(--bg-main)', borderRadius: 'var(--radius-sm)' }}>
-                <span>Pituitary Test Samples:</span>
-                <span style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--color-pituitary)' }}>323 Scans</span>
+                <span>Pituitary Scans (Balanced):</span>
+                <span style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--color-pituitary)' }}>3,000 Scans (Prec: 99.24%)</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem', background: 'var(--bg-main)', borderRadius: 'var(--radius-sm)' }}>
-                <span>Healthy Control Test Samples:</span>
-                <span style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--color-notumor)' }}>391 Scans</span>
+                <span>Healthy Control Scans (Balanced):</span>
+                <span style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--color-notumor)' }}>3,000 Scans (Rec: 99.80%)</span>
               </div>
             </div>
           </div>

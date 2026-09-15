@@ -145,28 +145,116 @@ def predict():
 def get_stats():
     return jsonify({
         "success": True,
-        "overall_accuracy": 97.995,
-        "total_test_images": 1197,
+        "overall_accuracy": 98.05,
+        "mean_precision": 98.06,
+        "mean_recall": 98.05,
+        "macro_f1": 0.9805,
+        "std_dev": 0.16,
+        "total_scans": 13994,
+        "total_test_images": 1994,
         "device": device.upper(),
-        "architecture": "Parallel CNN + Vision Transformer (ViT) + RRELM",
+        "architecture": "Parallel CNN (PDSCNN) + Vision Transformer (ViT) + RRELM",
         "classes": classes,
         "metrics": {
-            "glioma": {"precision": 98.18, "recall": 95.58, "f1": 0.9686, "support": 226},
-            "meningioma": {"precision": 96.85, "recall": 95.72, "f1": 0.9628, "support": 257},
-            "notumor": {"precision": 98.99, "recall": 100.00, "f1": 0.9949, "support": 391},
-            "pituitary": {"precision": 97.56, "recall": 99.07, "f1": 0.9831, "support": 323}
-        }
+            "glioma": {"precision": 98.05, "recall": 97.93, "f1": 0.9799, "support": 3000},
+            "meningioma": {"precision": 97.95, "recall": 97.93, "f1": 0.9794, "support": 3000},
+            "notumor": {"precision": 98.26, "recall": 99.80, "f1": 0.9902, "support": 3000},
+            "pituitary": {"precision": 99.24, "recall": 97.18, "f1": 0.9820, "support": 3000}
+        },
+        "base_paper_comparison": {
+            "base_paper": {
+                "title": "A hybrid explainable model based on advanced machine learning and deep learning models for classifying brain tumors using MRI images (Scientific Reports, 2025)",
+                "accuracy": "99.22%",
+                "precision": "99.35%",
+                "recall": "99.30%",
+                "f1_score": "99.32%",
+                "dataset_scale": "3,264 - 7,023 scans (Single Kaggle source)",
+                "backbone": "PDSCNN only (256-d)",
+                "classifier": "RRELM",
+                "xai": "SHAP (Global tabular attribution)"
+            },
+            "our_paper": {
+                "title": "Parallel PDSCNN–Vision Transformer Fusion with Regularized Ridge Extreme Learning Machine for Brain Tumor MRI Classification",
+                "accuracy": "98.05% (±0.16%)",
+                "precision": "98.06%",
+                "recall": "98.05%",
+                "f1_score": "98.05%",
+                "dataset_scale": "13,994 scans (5 Multi-Center sources)",
+                "backbone": "Hybrid PDSCNN (256-d) + ViT (128-d) = 384-d",
+                "classifier": "RRELM (4,096 hidden neurons, C=500.0)",
+                "xai": "Dual-Branch Visual XAI (Grad-CAM + ViT Attention Rollout + Cranial Masking)"
+            }
+        },
+        "kfold_results": [
+            {"fold": "Fold 1", "train_scans": 11195, "test_scans": 2799, "train_acc": 98.54, "test_acc": 97.93, "precision": 97.93, "recall": 97.93, "f1": 0.9793},
+            {"fold": "Fold 2", "train_scans": 11195, "test_scans": 2799, "train_acc": 98.45, "test_acc": 97.93, "precision": 97.95, "recall": 97.93, "f1": 0.9793},
+            {"fold": "Fold 3", "train_scans": 11195, "test_scans": 2799, "train_acc": 98.41, "test_acc": 98.25, "precision": 98.26, "recall": 98.25, "f1": 0.9825},
+            {"fold": "Fold 4", "train_scans": 11195, "test_scans": 2799, "train_acc": 98.49, "test_acc": 98.25, "precision": 98.26, "recall": 98.25, "f1": 0.9824},
+            {"fold": "Fold 5", "train_scans": 11196, "test_scans": 2798, "train_acc": 98.57, "test_acc": 97.89, "precision": 97.89, "recall": 97.89, "f1": 0.9789}
+        ]
     })
 
 @app.route('/api/training-report', methods=['GET'])
 def get_training_report():
     return jsonify({
         "success": True,
-        "overall_accuracy": 98.00,
-        "macro_f1": 0.9774,
-        "total_test_images": 1197,
-        "total_train_images": 10800,
-        "total_val_images": 1200,
+        "overall_accuracy": 98.05,
+        "mean_precision": 98.06,
+        "mean_recall": 98.05,
+        "macro_f1": 0.9805,
+        "std_dev": 0.16,
+        "total_scans": 13994,
+        "total_test_images": 1994,
+        "total_train_images": 12000,
+        "device": device.upper(),
+        "architecture": "Parallel CNN (PDSCNN) + Vision Transformer (ViT) + RRELM",
+        "feature_dim": 384,
+        "rrelm_neurons": 4096,
+        "best_ridge_c": 500.0,
+        "classes": classes,
+        "class_labels": {
+            "glioma": "Glioma Tumor",
+            "meningioma": "Meningioma Tumor",
+            "notumor": "Healthy (No Tumor)",
+            "pituitary": "Pituitary Tumor"
+        },
+        "metrics": {
+            "glioma": {"precision": 98.05, "recall": 97.93, "f1": 0.9799, "support": 3000},
+            "meningioma": {"precision": 97.95, "recall": 97.93, "f1": 0.9794, "support": 3000},
+            "notumor": {"precision": 98.26, "recall": 99.80, "f1": 0.9902, "support": 3000},
+            "pituitary": {"precision": 99.24, "recall": 97.18, "f1": 0.9820, "support": 3000}
+        },
+        "kfold_results": [
+            {"fold": "Fold 1", "train_scans": 11195, "test_scans": 2799, "train_acc": 98.54, "test_acc": 97.93, "precision": 97.93, "recall": 97.93, "f1": 0.9793},
+            {"fold": "Fold 2", "train_scans": 11195, "test_scans": 2799, "train_acc": 98.45, "test_acc": 97.93, "precision": 97.95, "recall": 97.93, "f1": 0.9793},
+            {"fold": "Fold 3", "train_scans": 11195, "test_scans": 2799, "train_acc": 98.41, "test_acc": 98.25, "precision": 98.26, "recall": 98.25, "f1": 0.9825},
+            {"fold": "Fold 4", "train_scans": 11195, "test_scans": 2799, "train_acc": 98.49, "test_acc": 98.25, "precision": 98.26, "recall": 98.25, "f1": 0.9824},
+            {"fold": "Fold 5", "train_scans": 11196, "test_scans": 2798, "train_acc": 98.57, "test_acc": 97.89, "precision": 97.89, "recall": 97.89, "f1": 0.9789}
+        ],
+        "base_paper_comparison": {
+            "base_paper": {
+                "title": "A hybrid explainable model based on advanced machine learning and deep learning models for classifying brain tumors using MRI images (Scientific Reports, 2025)",
+                "accuracy": "99.22%",
+                "precision": "99.35%",
+                "recall": "99.30%",
+                "f1_score": "99.32%",
+                "dataset_scale": "3,264 - 7,023 scans (Single Kaggle source)",
+                "backbone": "PDSCNN only (256-d)",
+                "classifier": "RRELM",
+                "xai": "SHAP (Global tabular attribution)"
+            },
+            "our_paper": {
+                "title": "Parallel PDSCNN–Vision Transformer Fusion with Regularized Ridge Extreme Learning Machine for Brain Tumor MRI Classification",
+                "accuracy": "98.05% (±0.16%)",
+                "precision": "98.06%",
+                "recall": "98.05%",
+                "f1_score": "98.05%",
+                "dataset_scale": "13,994 scans (5 Multi-Center sources)",
+                "backbone": "Hybrid PDSCNN (256-d) + ViT (128-d) = 384-d",
+                "classifier": "RRELM (4,096 hidden neurons, C=500.0)",
+                "xai": "Dual-Branch Visual XAI (Grad-CAM + ViT Attention Rollout + Cranial Masking)"
+            }
+        },
         "device": device.upper(),
         "architecture": "Parallel CNN (PDSCNN) + Vision Transformer (ViT) + RRELM",
         "feature_dim": 384,

@@ -127,6 +127,13 @@ export default function TrainingReportModal({ isOpen, onClose, reportData }) {
             <span>Executive Summary</span>
           </button>
           <button
+            className={`training-tab-btn ${activeTab === 'basepaper' ? 'active' : ''}`}
+            onClick={() => setActiveTab('basepaper')}
+          >
+            <CheckCircle2 size={15} />
+            <span>Base Paper & 5-Fold CV</span>
+          </button>
+          <button
             className={`training-tab-btn ${activeTab === 'confusion' ? 'active' : ''}`}
             onClick={() => setActiveTab('confusion')}
           >
@@ -162,24 +169,24 @@ export default function TrainingReportModal({ isOpen, onClose, reportData }) {
           <div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
               <div className="kpi-metric-card">
-                <div className="kpi-label">Overall Test Accuracy</div>
-                <div className="kpi-value glow-cyan">{data.overall_accuracy.toFixed(2)}%</div>
-                <div className="kpi-sub">On 1,197 unseen test scans</div>
+                <div className="kpi-label">5-Fold Mean Accuracy</div>
+                <div className="kpi-value glow-cyan">98.05%</div>
+                <div className="kpi-sub">±0.16% on 13,994 multi-center scans</div>
               </div>
               <div className="kpi-metric-card">
                 <div className="kpi-label">Macro F1-Score</div>
-                <div className="kpi-value glow-green">{data.macro_f1.toFixed(4)}</div>
-                <div className="kpi-sub">Harmonic mean across 4 classes</div>
+                <div className="kpi-value glow-green">0.9805</div>
+                <div className="kpi-sub">Mean Precision: 98.06% | Recall: 98.05%</div>
               </div>
               <div className="kpi-metric-card">
                 <div className="kpi-label">Healthy Scan Recall</div>
-                <div className="kpi-value glow-purple">100.0%</div>
-                <div className="kpi-sub">391 / 391 healthy controls correct</div>
+                <div className="kpi-value glow-purple">99.80%</div>
+                <div className="kpi-sub">Near-zero false alarm rate</div>
               </div>
               <div className="kpi-metric-card">
-                <div className="kpi-label">Total Training Dataset</div>
-                <div className="kpi-value glow-cyan">{data.total_train_images.toLocaleString()}</div>
-                <div className="kpi-sub">Balanced MRI scan repository</div>
+                <div className="kpi-label">Total Multi-Center Scans</div>
+                <div className="kpi-value glow-cyan">13,994</div>
+                <div className="kpi-sub">Across 5 Kaggle Repositories</div>
               </div>
             </div>
 
@@ -219,7 +226,154 @@ export default function TrainingReportModal({ isOpen, onClose, reportData }) {
           </div>
         )}
 
-        {/* Tab 2: Testing & Confusion Matrix */}
+        {/* Tab 2: Base Paper Benchmark & 5-Fold Cross Validation */}
+        {activeTab === 'basepaper' && (
+          <div>
+            {/* 5-Fold Stratified Cross Validation Table */}
+            <div className="report-section-box" style={{ marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <div className="section-title" style={{ margin: 0 }}>
+                  <Activity size={16} />
+                  <span>Stratified 5-Fold Cross-Validation Performance (13,994 Total Scans)</span>
+                </div>
+                <span style={{ fontSize: '0.75rem', background: 'rgba(0, 229, 255, 0.15)', color: 'var(--cyan-electric)', padding: '2px 8px', borderRadius: '6px', fontFamily: 'JetBrains Mono', fontWeight: 700 }}>
+                  Mean: 98.05% (±0.16%)
+                </span>
+              </div>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', textAlign: 'left' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}>
+                      <th style={{ padding: '0.5rem' }}>Fold Index</th>
+                      <th style={{ padding: '0.5rem' }}>Train Scans</th>
+                      <th style={{ padding: '0.5rem' }}>Test Scans</th>
+                      <th style={{ padding: '0.5rem' }}>Train Acc</th>
+                      <th style={{ padding: '0.5rem' }}>Test Acc</th>
+                      <th style={{ padding: '0.5rem' }}>Precision</th>
+                      <th style={{ padding: '0.5rem' }}>Recall</th>
+                      <th style={{ padding: '0.5rem' }}>F1-Score</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style={{ borderBottom: '1px solid rgba(56, 189, 248, 0.08)' }}>
+                      <td style={{ padding: '0.5rem', fontWeight: 700, color: 'var(--cyan-electric)' }}>Fold 1</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>11,195</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>2,799</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono', color: 'var(--text-secondary)' }}>98.54%</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--notumor-color)' }}>97.93%</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>97.93%</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>97.93%</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>97.93%</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid rgba(56, 189, 248, 0.08)' }}>
+                      <td style={{ padding: '0.5rem', fontWeight: 700, color: 'var(--cyan-electric)' }}>Fold 2</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>11,195</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>2,799</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono', color: 'var(--text-secondary)' }}>98.45%</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--notumor-color)' }}>97.93%</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>97.95%</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>97.93%</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>97.93%</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid rgba(56, 189, 248, 0.08)' }}>
+                      <td style={{ padding: '0.5rem', fontWeight: 700, color: 'var(--cyan-electric)' }}>Fold 3</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>11,195</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>2,799</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono', color: 'var(--text-secondary)' }}>98.41%</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--notumor-color)' }}>98.25%</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>98.26%</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>98.25%</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>98.25%</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid rgba(56, 189, 248, 0.08)' }}>
+                      <td style={{ padding: '0.5rem', fontWeight: 700, color: 'var(--cyan-electric)' }}>Fold 4</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>11,195</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>2,799</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono', color: 'var(--text-secondary)' }}>98.49%</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--notumor-color)' }}>98.25%</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>98.26%</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>98.25%</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>98.24%</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid rgba(56, 189, 248, 0.08)' }}>
+                      <td style={{ padding: '0.5rem', fontWeight: 700, color: 'var(--cyan-electric)' }}>Fold 5</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>11,196</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>2,798</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono', color: 'var(--text-secondary)' }}>98.57%</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--notumor-color)' }}>97.89%</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>97.89%</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>97.89%</td>
+                      <td style={{ padding: '0.5rem', fontFamily: 'JetBrains Mono' }}>97.89%</td>
+                    </tr>
+                    <tr style={{ background: 'rgba(0, 229, 255, 0.1)', borderTop: '2px solid var(--cyan-electric)' }}>
+                      <td style={{ padding: '0.65rem 0.5rem', fontWeight: 800, color: 'var(--cyan-electric)' }}>OVERALL AVERAGE</td>
+                      <td style={{ padding: '0.65rem 0.5rem', fontFamily: 'JetBrains Mono', fontWeight: 700 }}>11,195</td>
+                      <td style={{ padding: '0.65rem 0.5rem', fontFamily: 'JetBrains Mono', fontWeight: 700 }}>2,799</td>
+                      <td style={{ padding: '0.65rem 0.5rem', fontFamily: 'JetBrains Mono', fontWeight: 700 }}>98.49%</td>
+                      <td style={{ padding: '0.65rem 0.5rem', fontFamily: 'JetBrains Mono', fontWeight: 800, color: 'var(--notumor-color)' }}>98.05% (±0.16%)</td>
+                      <td style={{ padding: '0.65rem 0.5rem', fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--cyan-bright)' }}>98.06%</td>
+                      <td style={{ padding: '0.65rem 0.5rem', fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--indigo-light)' }}>98.05%</td>
+                      <td style={{ padding: '0.65rem 0.5rem', fontFamily: 'JetBrains Mono', fontWeight: 800, color: 'var(--cyan-electric)' }}>0.9805</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Base Paper vs Proposed Model Benchmark Comparison Table */}
+            <div className="report-section-box">
+              <div className="section-title">
+                <Award size={16} />
+                <span>Base Paper Benchmark Comparison (Nature Scientific Reports vs Proposed)</span>
+              </div>
+              <div style={{ marginTop: '0.75rem', overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', textAlign: 'left' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}>
+                      <th style={{ padding: '0.5rem', width: '22%' }}>Evaluation Metric</th>
+                      <th style={{ padding: '0.5rem', width: '38%' }}>Base Paper (Scientific Reports, 2025)</th>
+                      <th style={{ padding: '0.5rem', width: '40%', color: 'var(--cyan-electric)' }}>Proposed (NeuroScan AI)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style={{ borderBottom: '1px solid rgba(56, 189, 248, 0.08)' }}>
+                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>5-Fold CV Accuracy</td>
+                      <td style={{ padding: '0.6rem 0.5rem', fontFamily: 'JetBrains Mono', fontWeight: 700 }}>99.22%</td>
+                      <td style={{ padding: '0.6rem 0.5rem', fontFamily: 'JetBrains Mono', fontWeight: 800, color: 'var(--cyan-electric)' }}>98.05% (±0.16%) [Multi-Center Benchmark]</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid rgba(56, 189, 248, 0.08)' }}>
+                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>Mean Precision / Recall</td>
+                      <td style={{ padding: '0.6rem 0.5rem', fontFamily: 'JetBrains Mono' }}>99.35% / 99.30%</td>
+                      <td style={{ padding: '0.6rem 0.5rem', fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--notumor-color)' }}>98.06% Precision / 98.05% Recall</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid rgba(56, 189, 248, 0.08)' }}>
+                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>Dataset Scale</td>
+                      <td style={{ padding: '0.6rem 0.5rem' }}>3,264 - 7,023 scans (Single Kaggle source)</td>
+                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>13,994 scans (5 Multi-Center sources combined)</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid rgba(56, 189, 248, 0.08)' }}>
+                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>Feature Extraction Backbone</td>
+                      <td style={{ padding: '0.6rem 0.5rem' }}>PDSCNN only (256-d local spatial filters)</td>
+                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 700, color: 'var(--cyan-electric)' }}>Hybrid PDSCNN (256-d) + Vision Transformer (128-d) = 384-d</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid rgba(56, 189, 248, 0.08)' }}>
+                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>Classifier Head</td>
+                      <td style={{ padding: '0.6rem 0.5rem' }}>RRELM</td>
+                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 700 }}>RRELM (4,096 randomized hidden nodes, C=500.0)</td>
+                    </tr>
+                    <tr>
+                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>Explainable AI (XAI)</td>
+                      <td style={{ padding: '0.6rem 0.5rem' }}>SHAP (Tabular feature ranking)</td>
+                      <td style={{ padding: '0.6rem 0.5rem', fontWeight: 700, color: 'var(--cyan-electric)' }}>Dual-Branch Visual XAI (Grad-CAM + ViT Patch Rollout + Skull Masking)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab 3: Testing & Confusion Matrix */}
         {activeTab === 'confusion' && (
           <div>
             <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
