@@ -236,7 +236,7 @@ export default function Research() {
                   </td>
                   <td style={{ padding: '0.85rem 1rem', color: 'var(--color-notumor)', fontWeight: 700 }}>✓ 256-d</td>
                   <td style={{ padding: '0.85rem 1rem', color: 'var(--color-notumor)', fontWeight: 700 }}>✓ 128-d</td>
-                  <td style={{ padding: '0.85rem 1rem', fontWeight: 700, color: 'var(--accent-cyan)' }}>RRELM (C=0.1)</td>
+                  <td style={{ padding: '0.85rem 1rem', fontWeight: 700, color: 'var(--accent-cyan)' }}>RRELM (C=0.05)</td>
                   <td style={{ padding: '0.85rem 1rem', fontWeight: 600, color: 'var(--text-primary)' }}>
                     Dual local/global representation with analytical L2 regularized decision boundary
                   </td>

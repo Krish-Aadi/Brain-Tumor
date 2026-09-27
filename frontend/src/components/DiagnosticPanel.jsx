@@ -40,10 +40,10 @@ export default function DiagnosticPanel({ resultData, onReset, onOpenReport }) {
         </div>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <span style={{ background: 'rgba(16, 185, 129, 0.15)', color: 'var(--notumor-color)', padding: '2px 8px', borderRadius: '6px', fontWeight: 600 }}>
-            98.0% Accuracy
+            96.1% Accuracy
           </span>
           <span style={{ background: 'rgba(56, 189, 248, 0.15)', color: 'var(--cyan-electric)', padding: '2px 8px', borderRadius: '6px', fontWeight: 600 }}>
-            100% Recall
+            99.2% Recall
           </span>
         </div>
       </div>
@@ -134,7 +134,7 @@ export default function DiagnosticPanel({ resultData, onReset, onOpenReport }) {
       <div className="clinical-tip-box">
         <strong>Clinical Recommendation:</strong>{' '}
         {predictedClass === 'notumor' ? (
-          'Screening scan indicates no signs of intracranial lesion or mass effect. 100% benchmark recall verified for healthy control samples.'
+          'Screening scan indicates no signs of intracranial lesion or mass effect. 99.21% benchmark recall verified for healthy control samples.'
         ) : predictedClass ? (
           `Grad-CAM spatial heatmap highlights localized anatomical anomaly consistent with ${predictedClass} tumor features. Urgent neuro-surgical specialist consultation recommended.`
         ) : (

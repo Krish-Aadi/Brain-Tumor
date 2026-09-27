@@ -209,7 +209,7 @@ export default function Technology() {
           </div>
 
           <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '1.5rem' }}>
-            Rather than relying on iterative gradient descent with backpropagation in the classification head, the fused 384-dimensional features are mapped into a high-dimensional feature space (4096 hidden projection neurons) and solved analytically via <strong>Tikhonov (L2) Regularized Ridge Regression</strong>.
+            Rather than relying on iterative gradient descent with backpropagation in the classification head, the fused 384-dimensional features are mapped into a high-dimensional feature space (8192 hidden projection neurons) and solved analytically via <strong>Tikhonov (L2) Regularized Ridge Regression</strong>.
           </p>
 
           <div style={{
@@ -227,7 +227,7 @@ export default function Technology() {
           </div>
 
           <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-            Where <code>H</code> is the hidden-layer randomized projection matrix, <code>T</code> is the one-hot target matrix, and <code>C = 0.1</code> is the ridge regularization penalty coefficient that prevents singular inversion and stabilizes generalized decision boundaries.
+            Where <code>H</code> is the hidden-layer randomized projection matrix, <code>T</code> is the one-hot target matrix, and <code>C = 0.05</code> is the ridge regularization penalty coefficient that prevents singular inversion and stabilizes generalized decision boundaries.
           </p>
         </section>
 

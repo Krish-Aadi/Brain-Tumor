@@ -8,7 +8,7 @@ const CAPABILITIES = [
     category: 'Intra-Axial Mass',
     description: 'Infiltrative glial neoplasms affecting the cerebral cortex and subcortical white matter.',
     color: '#ef4444',
-    f1Score: '98.0% Prec | 98.0% F1'
+    f1Score: '98.6% Prec | 90.4% F1'
   },
   {
     id: 'meningioma',
@@ -16,7 +16,7 @@ const CAPABILITIES = [
     category: 'Dural-Based Mass',
     description: 'Extra-axial tumors originating from the arachnoid cap cells along meningeal membranes.',
     color: '#f59e0b',
-    f1Score: '98.0% Prec | 97.9% F1'
+    f1Score: '92.4% Prec | 93.2% F1'
   },
   {
     id: 'pituitary',
@@ -24,7 +24,7 @@ const CAPABILITIES = [
     category: 'Sellar Region Mass',
     description: 'Adenomas located in the sella turcica right above the sphenoid sinus.',
     color: '#a855f7',
-    f1Score: '99.2% Prec | 98.2% F1'
+    f1Score: '96.5% Prec | 98.0% F1'
   },
   {
     id: 'notumor',
@@ -32,7 +32,7 @@ const CAPABILITIES = [
     category: 'Healthy Control',
     description: 'Normal cranial MRI without focal space-occupying lesions or pathological enhancement.',
     color: '#10b981',
-    f1Score: '99.8% Rec | 99.0% F1'
+    f1Score: '99.2% Rec | 94.3% F1'
   }
 ];
 

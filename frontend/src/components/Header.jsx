@@ -20,11 +20,11 @@ export default function Header() {
       <div className="header-meta">
         <div className="meta-badge accuracy-badge" style={{ background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.4)', color: 'var(--notumor-color)' }}>
           <ShieldCheck size={14} />
-          <span>ACCURACY: <strong>98.00%</strong></span>
+          <span>ACCURACY: <strong>96.13%</strong></span>
         </div>
         <div className="meta-badge" style={{ background: 'rgba(56, 189, 248, 0.12)', border: '1px solid rgba(56, 189, 248, 0.3)', color: 'var(--cyan-electric)' }}>
           <Zap size={14} />
-          <span>RECALL: <strong>100% HEALTHY</strong></span>
+          <span>RECALL: <strong>99.21% HEALTHY</strong></span>
         </div>
         <div className="meta-badge">
           <Cpu size={14} style={{ color: 'var(--indigo-bright)' }} />

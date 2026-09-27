@@ -103,7 +103,7 @@ export default function Hero({ onStartDetectionClick }) {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <ShieldCheck size={16} style={{ color: 'var(--accent-indigo)' }} />
-            <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>RRELM (C=0.1)</span>
+            <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>RRELM (C=0.05)</span>
           </div>
         </div>
       </div>

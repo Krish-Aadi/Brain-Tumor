@@ -66,7 +66,7 @@ export default function About() {
   }, []);
 
   // Animated metric values
-  const accuracyCount = useCountUp(98, 1600, statsInView);
+  const accuracyCount = useCountUp(96, 1600, statsInView);
   const latencyCount = useCountUp(80, 1300, statsInView);
   const classesCount = useCountUp(4, 900, statsInView);
   const availabilityCount = useCountUp(24, 1200, statsInView);
@@ -283,7 +283,7 @@ export default function About() {
               <div style={{ height: '5px', background: 'var(--bg-main)', borderRadius: '999px', overflow: 'hidden' }}>
                 <div style={{
                   height: '100%',
-                  width: statsInView ? '98%' : '0%',
+                  width: statsInView ? '96%' : '0%',
                   background: '#38bdf8',
                   borderRadius: '999px',
                   transition: 'width 1.6s cubic-bezier(0.16, 1, 0.3, 1)'

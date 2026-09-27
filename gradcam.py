@@ -142,7 +142,10 @@ class ViTAttentionMap:
         vit_feat = out[:, 0]
         
         cnn_feat = self.feature_extractor.cnn(x)
-        fused = torch.cat((cnn_feat, vit_feat), dim=1)
+        cnn_norm = F.normalize(cnn_feat, p=2, dim=1)
+        vit_norm = F.normalize(vit_feat, p=2, dim=1)
+        fused = torch.cat((cnn_norm, vit_norm), dim=1)
+        fused = F.normalize(fused, p=2, dim=1)
         
         if self.rrelm_W is not None and self.rrelm_beta is not None:
             H = F.relu(fused @ self.rrelm_W + self.rrelm_b)

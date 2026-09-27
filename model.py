@@ -2,42 +2,110 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+class SqueezeExcitation(nn.Module):
+    """
+    Squeeze-and-Excitation Channel Attention:
+    Dynamically recalibrates channel-wise feature responses by explicitly modelling interdependencies.
+    """
+    def __init__(self, channels, reduction=16):
+        super(SqueezeExcitation, self).__init__()
+        reduced = max(channels // reduction, 8)
+        self.fc1 = nn.Linear(channels, reduced, bias=False)
+        self.fc2 = nn.Linear(reduced, channels, bias=False)
+        self.act = nn.ReLU(inplace=True)
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        b, c, _, _ = x.size()
+        y = x.view(b, c, -1).mean(dim=2)  # Global Average Pooling [B, C]
+        y = self.fc1(y)
+        y = self.act(y)
+        y = self.fc2(y)
+        y = self.sigmoid(y).view(b, c, 1, 1)  # Channel recalibration weights [B, C, 1, 1]
+        return x * y
+
+class DepthwiseSeparableBlock(nn.Module):
+    """
+    Squeeze-and-Excitation Residual Depthwise Separable Convolution Block:
+    1. Depthwise Convolution: Spatial filtering per channel independently.
+    2. Pointwise Convolution: 1x1 linear projection across channels.
+    3. Squeeze-and-Excitation: Dynamic channel attention recalibration.
+    4. Residual Skip Shortcut: Preserves gradient flow across deep representations.
+    """
+    def __init__(self, in_channels, out_channels, kernel_size=3, padding=1, use_residual=True):
+        super(DepthwiseSeparableBlock, self).__init__()
+        self.depthwise = nn.Conv2d(
+            in_channels, in_channels, kernel_size=kernel_size,
+            padding=padding, groups=in_channels, bias=False
+        )
+        self.bn_dw = nn.BatchNorm2d(in_channels)
+        self.pointwise = nn.Conv2d(
+            in_channels, out_channels, kernel_size=1, bias=False
+        )
+        self.bn_pw = nn.BatchNorm2d(out_channels)
+        self.se = SqueezeExcitation(out_channels)
+        self.act = nn.ReLU(inplace=True)
+        
+        self.use_residual = use_residual
+        if use_residual:
+            if in_channels != out_channels:
+                self.shortcut = nn.Sequential(
+                    nn.Conv2d(in_channels, out_channels, kernel_size=1, bias=False),
+                    nn.BatchNorm2d(out_channels)
+                )
+            else:
+                self.shortcut = nn.Identity()
+        else:
+            self.shortcut = None
+
+    def forward(self, x):
+        res = self.shortcut(x) if self.use_residual else None
+        out = self.act(self.bn_dw(self.depthwise(x)))
+        out = self.bn_pw(self.pointwise(out))
+        out = self.se(out)  # Channel attention
+        if res is not None:
+            out = self.act(out + res)
+        else:
+            out = self.act(out)
+        return out
+
 class PDSCNN(nn.Module):
     def __init__(self):
         super(PDSCNN, self).__init__()
-        # Parallel Deep Separable Convolutional Neural Network (Simplified)
+        # Parallel Depthwise Separable Convolutional Neural Network (SE-Enhanced)
         # Input: 3 x 124 x 124
         
-        self.conv1 = nn.Conv2d(3, 32, kernel_size=3, padding=1)
-        self.bn1 = nn.BatchNorm2d(32)
+        # Stage 1: Stem Convolution (Standard 3x3 Conv for initial RGB spatial extraction)
+        self.conv1 = nn.Sequential(
+            nn.Conv2d(3, 64, kernel_size=3, padding=1, bias=False),
+            nn.BatchNorm2d(64),
+            nn.ReLU(inplace=True)
+        )
         
-        self.conv2 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
-        self.bn2 = nn.BatchNorm2d(64)
-        
-        self.conv3 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
-        self.bn3 = nn.BatchNorm2d(128)
-        
-        self.conv4 = nn.Conv2d(128, 256, kernel_size=3, padding=1)
-        self.bn4 = nn.BatchNorm2d(256)
+        # Stages 2, 3, 4: Hierarchical SE Residual Depthwise Separable Blocks (64 -> 128 -> 256 -> 512)
+        self.conv2 = DepthwiseSeparableBlock(64, 128, kernel_size=3, padding=1)
+        self.conv3 = DepthwiseSeparableBlock(128, 256, kernel_size=3, padding=1)
+        self.conv4 = DepthwiseSeparableBlock(256, 512, kernel_size=3, padding=1)
         
         self.pool = nn.MaxPool2d(2, 2)
         self.global_pool = nn.AdaptiveAvgPool2d((1, 1))
         
-        self.fc = nn.Linear(256, 256)
+        # Projects 512-d pooled feature map to 256-d local feature vector
+        self.fc = nn.Linear(512, 256)
         
     def forward(self, x):
         # x: [B, 3, 124, 124]
-        x = self.pool(F.relu(self.bn1(self.conv1(x))))  # 62x62
-        x = self.pool(F.relu(self.bn2(self.conv2(x))))  # 31x31
-        x = self.pool(F.relu(self.bn3(self.conv3(x))))  # 15x15
+        x = self.pool(self.conv1(x))  # 62x62
+        x = self.pool(self.conv2(x))  # 31x31
+        x = self.pool(self.conv3(x))  # 15x15
         
         # Save this feature map for Grad-CAM later
         self.target_layer_activation = x 
         
-        x = self.pool(F.relu(self.bn4(self.conv4(x))))  # 7x7
-        x = self.global_pool(x)                         # 1x1
-        x = x.view(x.size(0), -1)                       # [B, 256]
-        x = self.fc(x)                                  # [B, 256]
+        x = self.pool(self.conv4(x))  # 7x7
+        x = self.global_pool(x)       # 1x1
+        x = x.view(x.size(0), -1)     # [B, 512]
+        x = self.fc(x)                # [B, 256]
         return x
 
 class PatchEmbedding(nn.Module):
@@ -52,7 +120,7 @@ class PatchEmbedding(nn.Module):
         return x
 
 class ViTBranch(nn.Module):
-    def __init__(self, in_channels=3, patch_size=16, embed_dim=128, num_heads=4, num_layers=4):
+    def __init__(self, in_channels=3, patch_size=16, embed_dim=128, num_heads=8, num_layers=4):
         super(ViTBranch, self).__init__()
         self.patch_embed = PatchEmbedding(in_channels, patch_size, embed_dim)
         
@@ -116,8 +184,13 @@ class HybridFeatureExtractor(nn.Module):
         cnn_features = self.cnn(x)  # [B, 256]
         vit_features = self.vit(x)  # [B, 128]
         
-        # Concatenate features
-        fused_features = torch.cat((cnn_features, vit_features), dim=1)  # [B, 384]
+        # Branch-level L2 normalization for balanced energy contribution
+        cnn_norm = F.normalize(cnn_features, p=2, dim=1)
+        vit_norm = F.normalize(vit_features, p=2, dim=1)
+        
+        # Concatenate normalized representations [B, 384]
+        fused_features = torch.cat((cnn_norm, vit_norm), dim=1)
+        fused_features = F.normalize(fused_features, p=2, dim=1)
         return fused_features
 
     def get_vit_attention_maps(self, x):
@@ -140,18 +213,22 @@ class EndToEndModel(nn.Module):
 
 class RRELM:
     """
-    Regularized Ridge Extreme Learning Machine
+    Regularized Ridge Extreme Learning Machine with Kaiming-scaled random projections.
     """
-    def __init__(self, input_dim=384, hidden_dim=1024, num_classes=4, C=1.0):
+    def __init__(self, input_dim=384, hidden_dim=8192, num_classes=4, C=1.0, seed=42):
         self.input_dim = input_dim
         self.hidden_dim = hidden_dim
         self.num_classes = num_classes
         self.C = C  # Regularization parameter
         
-        # Randomly initialize hidden weights and biases (never updated)
-        # Using a fixed seed ensures reproducibility if needed, but we'll let it be random here
-        self.W = torch.randn(input_dim, hidden_dim)
-        self.b = torch.randn(hidden_dim)
+        # Proper He/Kaiming scaling: std = sqrt(2 / input_dim) ensures stable ReLU activations
+        if seed is not None:
+            gen = torch.Generator().manual_seed(seed)
+            self.W = torch.randn(input_dim, hidden_dim, generator=gen) * (2.0 / input_dim) ** 0.5
+            self.b = torch.randn(hidden_dim, generator=gen) * 0.05
+        else:
+            self.W = torch.randn(input_dim, hidden_dim) * (2.0 / input_dim) ** 0.5
+            self.b = torch.randn(hidden_dim) * 0.05
         
         # Output weights (computed analytically)
         self.beta = None

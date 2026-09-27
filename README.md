@@ -6,12 +6,12 @@ A state-of-the-art Deep Learning framework for multi-class Brain Tumor MRI image
 
 ## 🌟 Key Highlights & Performance
 
-* **5-Fold Stratified Cross-Validation:** **98.05% (±0.16%)** Mean Accuracy across all **13,994 patient MRI scans**.
+* **5-Fold Stratified Cross-Validation:** **96.13% (±0.17%)** Mean Accuracy across all **13,994 patient MRI scans**.
 * **High Precision & Generalization:**
-  * **Glioma:** 98.05% Precision | 97.93% Recall
-  * **Meningioma:** 97.95% Precision | 97.93% Recall
-  * **Healthy (No Tumor):** 98.26% Precision | 99.80% Recall
-  * **Pituitary:** 99.24% Precision | 97.18% Recall
+  * **Glioma:** 98.58% Precision | 83.40% Recall
+  * **Meningioma:** 92.37% Precision | 93.98% Recall
+  * **Healthy (No Tumor):** 89.78% Precision | 99.21% Recall
+  * **Pituitary:** 96.52% Precision | 99.58% Recall
 * **Dataset Scale:** **13,994 total MRI scans** integrated across 5 open-source Kaggle datasets:
   * **12,000 Training Scans** (3,000 per class — 100% Balanced with CLAHE & Mixup augmentation)
   * **1,994 Independent Test Scans** (Multi-hospital benchmark evaluation)
@@ -38,7 +38,7 @@ A state-of-the-art Deep Learning framework for multi-class Brain Tumor MRI image
                                               │
                                               ▼
                    [ Regularized Ridge Extreme Learning Machine (RRELM) ]
-                                (4,096 Hidden Neurons, C=500.0)
+                                (8,192 Hidden Neurons, C=0.05)
                                               │
                                               ▼
                        [ Class Prediction & Dual-Branch Heatmap Overlay ]
@@ -53,13 +53,13 @@ Evaluated across all **13,994 scans** with 5 independent folds:
 ```
 Fold     | Train Scans | Test Scans | Train Acc   | Test Acc   | Precision  | Recall     | F1-Score  
 -------------------------------------------------------------------------------------------------
-Fold 1   | 11195       | 2799       |  98.54%     |  97.93%    |  97.93%    |  97.93%    |  97.93%
-Fold 2   | 11195       | 2799       |  98.45%     |  97.93%    |  97.95%    |  97.93%    |  97.93%
-Fold 3   | 11195       | 2799       |  98.41%     |  98.25%    |  98.26%    |  98.25%    |  98.25%
-Fold 4   | 11195       | 2799       |  98.49%     |  98.25%    |  98.26%    |  98.25%    |  98.24%
-Fold 5   | 11196       | 2798       |  98.57%     |  97.89%    |  97.89%    |  97.89%    |  97.89%
+Fold 1   | 11195       | 2799       |  96.15%     |  96.18%    |  96.22%    |  96.18%    |  96.17%
+Fold 2   | 11195       | 2799       |  96.16%     |  96.14%    |  96.17%    |  96.14%    |  96.13%
+Fold 3   | 11195       | 2799       |  96.15%     |  96.21%    |  96.27%    |  96.21%    |  96.21%
+Fold 4   | 11195       | 2799       |  96.14%     |  96.32%    |  96.35%    |  96.32%    |  96.32%
+Fold 5   | 11196       | 2798       |  96.23%     |  95.82%    |  95.87%    |  95.82%    |  95.80%
 =================================================================================================
-AVERAGE  |             |            |  98.49%     |  98.05%    |  98.06%    |  98.05%    |  98.05% (±0.16%)
+AVERAGE  |             |            |  96.17%     |  96.13%    |  96.18%    |  96.13%    |  96.13% (±0.17%)
 =================================================================================================
 ```
 

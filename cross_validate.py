@@ -121,7 +121,7 @@ def run_fast_feature_kfold(n_splits=5, device=None, root_dir='dataset', c_val=50
         X_train, y_train = X[train_idx], y[train_idx]
         X_val, y_val = X[val_idx], y[val_idx]
 
-        rrelm = RRELM(input_dim=384, hidden_dim=4096, num_classes=4, C=c_val)
+        rrelm = RRELM(input_dim=384, hidden_dim=8192, num_classes=4, C=c_val)
         rrelm.fit(X_train, y_train)
 
         # Train Accuracy

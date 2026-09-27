@@ -145,21 +145,22 @@ def predict():
 def get_stats():
     return jsonify({
         "success": True,
-        "overall_accuracy": 98.05,
-        "mean_precision": 98.06,
-        "mean_recall": 98.05,
-        "macro_f1": 0.9805,
-        "std_dev": 0.16,
+        "overall_accuracy": 96.13,
+        "mean_precision": 96.18,
+        "mean_recall": 96.13,
+        "macro_f1": 0.9613,
+        "std_dev": 0.17,
+        "test_set_accuracy": 93.98,
         "total_scans": 13994,
         "total_test_images": 1994,
         "device": device.upper(),
         "architecture": "Parallel CNN (PDSCNN) + Vision Transformer (ViT) + RRELM",
         "classes": classes,
         "metrics": {
-            "glioma": {"precision": 98.05, "recall": 97.93, "f1": 0.9799, "support": 3000},
-            "meningioma": {"precision": 97.95, "recall": 97.93, "f1": 0.9794, "support": 3000},
-            "notumor": {"precision": 98.26, "recall": 99.80, "f1": 0.9902, "support": 3000},
-            "pituitary": {"precision": 99.24, "recall": 97.18, "f1": 0.9820, "support": 3000}
+            "glioma": {"precision": 98.58, "recall": 83.40, "f1": 0.9036, "support": 500},
+            "meningioma": {"precision": 92.37, "recall": 93.98, "f1": 0.9317, "support": 515},
+            "notumor": {"precision": 89.78, "recall": 99.21, "f1": 0.9426, "support": 505},
+            "pituitary": {"precision": 96.52, "recall": 99.58, "f1": 0.9803, "support": 474}
         },
         "base_paper_comparison": {
             "base_paper": {
@@ -175,22 +176,22 @@ def get_stats():
             },
             "our_paper": {
                 "title": "Parallel PDSCNN–Vision Transformer Fusion with Regularized Ridge Extreme Learning Machine for Brain Tumor MRI Classification",
-                "accuracy": "98.05% (±0.16%)",
-                "precision": "98.06%",
-                "recall": "98.05%",
-                "f1_score": "98.05%",
+                "accuracy": "96.13% (±0.17%)",
+                "precision": "96.18%",
+                "recall": "96.13%",
+                "f1_score": "96.13%",
                 "dataset_scale": "13,994 scans (5 Multi-Center sources)",
                 "backbone": "Hybrid PDSCNN (256-d) + ViT (128-d) = 384-d",
-                "classifier": "RRELM (4,096 hidden neurons, C=500.0)",
+                "classifier": "RRELM (8,192 hidden neurons, C=0.05)",
                 "xai": "Dual-Branch Visual XAI (Grad-CAM + ViT Attention Rollout + Cranial Masking)"
             }
         },
         "kfold_results": [
-            {"fold": "Fold 1", "train_scans": 11195, "test_scans": 2799, "train_acc": 98.54, "test_acc": 97.93, "precision": 97.93, "recall": 97.93, "f1": 0.9793},
-            {"fold": "Fold 2", "train_scans": 11195, "test_scans": 2799, "train_acc": 98.45, "test_acc": 97.93, "precision": 97.95, "recall": 97.93, "f1": 0.9793},
-            {"fold": "Fold 3", "train_scans": 11195, "test_scans": 2799, "train_acc": 98.41, "test_acc": 98.25, "precision": 98.26, "recall": 98.25, "f1": 0.9825},
-            {"fold": "Fold 4", "train_scans": 11195, "test_scans": 2799, "train_acc": 98.49, "test_acc": 98.25, "precision": 98.26, "recall": 98.25, "f1": 0.9824},
-            {"fold": "Fold 5", "train_scans": 11196, "test_scans": 2798, "train_acc": 98.57, "test_acc": 97.89, "precision": 97.89, "recall": 97.89, "f1": 0.9789}
+            {"fold": "Fold 1", "train_scans": 11195, "test_scans": 2799, "train_acc": 96.15, "test_acc": 96.18, "precision": 96.22, "recall": 96.18, "f1": 96.17},
+            {"fold": "Fold 2", "train_scans": 11195, "test_scans": 2799, "train_acc": 96.16, "test_acc": 96.14, "precision": 96.17, "recall": 96.14, "f1": 96.13},
+            {"fold": "Fold 3", "train_scans": 11195, "test_scans": 2799, "train_acc": 96.15, "test_acc": 96.21, "precision": 96.27, "recall": 96.21, "f1": 96.21},
+            {"fold": "Fold 4", "train_scans": 11195, "test_scans": 2799, "train_acc": 96.14, "test_acc": 96.32, "precision": 96.35, "recall": 96.32, "f1": 96.32},
+            {"fold": "Fold 5", "train_scans": 11196, "test_scans": 2798, "train_acc": 96.23, "test_acc": 95.82, "precision": 95.87, "recall": 95.82, "f1": 95.80}
         ]
     })
 
@@ -198,19 +199,20 @@ def get_stats():
 def get_training_report():
     return jsonify({
         "success": True,
-        "overall_accuracy": 98.05,
-        "mean_precision": 98.06,
-        "mean_recall": 98.05,
-        "macro_f1": 0.9805,
-        "std_dev": 0.16,
+        "overall_accuracy": 96.13,
+        "mean_precision": 96.18,
+        "mean_recall": 96.13,
+        "macro_f1": 0.9613,
+        "std_dev": 0.17,
+        "test_set_accuracy": 93.98,
         "total_scans": 13994,
         "total_test_images": 1994,
         "total_train_images": 12000,
         "device": device.upper(),
         "architecture": "Parallel CNN (PDSCNN) + Vision Transformer (ViT) + RRELM",
         "feature_dim": 384,
-        "rrelm_neurons": 4096,
-        "best_ridge_c": 500.0,
+        "rrelm_neurons": 8192,
+        "best_ridge_c": 0.05,
         "classes": classes,
         "class_labels": {
             "glioma": "Glioma Tumor",
@@ -219,17 +221,17 @@ def get_training_report():
             "pituitary": "Pituitary Tumor"
         },
         "metrics": {
-            "glioma": {"precision": 98.05, "recall": 97.93, "f1": 0.9799, "support": 3000},
-            "meningioma": {"precision": 97.95, "recall": 97.93, "f1": 0.9794, "support": 3000},
-            "notumor": {"precision": 98.26, "recall": 99.80, "f1": 0.9902, "support": 3000},
-            "pituitary": {"precision": 99.24, "recall": 97.18, "f1": 0.9820, "support": 3000}
+            "glioma": {"precision": 98.58, "recall": 83.40, "f1": 0.9036, "support": 500},
+            "meningioma": {"precision": 92.37, "recall": 93.98, "f1": 0.9317, "support": 515},
+            "notumor": {"precision": 89.78, "recall": 99.21, "f1": 0.9426, "support": 505},
+            "pituitary": {"precision": 96.52, "recall": 99.58, "f1": 0.9803, "support": 474}
         },
         "kfold_results": [
-            {"fold": "Fold 1", "train_scans": 11195, "test_scans": 2799, "train_acc": 98.54, "test_acc": 97.93, "precision": 97.93, "recall": 97.93, "f1": 0.9793},
-            {"fold": "Fold 2", "train_scans": 11195, "test_scans": 2799, "train_acc": 98.45, "test_acc": 97.93, "precision": 97.95, "recall": 97.93, "f1": 0.9793},
-            {"fold": "Fold 3", "train_scans": 11195, "test_scans": 2799, "train_acc": 98.41, "test_acc": 98.25, "precision": 98.26, "recall": 98.25, "f1": 0.9825},
-            {"fold": "Fold 4", "train_scans": 11195, "test_scans": 2799, "train_acc": 98.49, "test_acc": 98.25, "precision": 98.26, "recall": 98.25, "f1": 0.9824},
-            {"fold": "Fold 5", "train_scans": 11196, "test_scans": 2798, "train_acc": 98.57, "test_acc": 97.89, "precision": 97.89, "recall": 97.89, "f1": 0.9789}
+            {"fold": "Fold 1", "train_scans": 11195, "test_scans": 2799, "train_acc": 96.15, "test_acc": 96.18, "precision": 96.22, "recall": 96.18, "f1": 96.17},
+            {"fold": "Fold 2", "train_scans": 11195, "test_scans": 2799, "train_acc": 96.16, "test_acc": 96.14, "precision": 96.17, "recall": 96.14, "f1": 96.13},
+            {"fold": "Fold 3", "train_scans": 11195, "test_scans": 2799, "train_acc": 96.15, "test_acc": 96.21, "precision": 96.27, "recall": 96.21, "f1": 96.21},
+            {"fold": "Fold 4", "train_scans": 11195, "test_scans": 2799, "train_acc": 96.14, "test_acc": 96.32, "precision": 96.35, "recall": 96.32, "f1": 96.32},
+            {"fold": "Fold 5", "train_scans": 11196, "test_scans": 2798, "train_acc": 96.23, "test_acc": 95.82, "precision": 95.87, "recall": 95.82, "f1": 95.80}
         ],
         "base_paper_comparison": {
             "base_paper": {
@@ -245,59 +247,41 @@ def get_training_report():
             },
             "our_paper": {
                 "title": "Parallel PDSCNN–Vision Transformer Fusion with Regularized Ridge Extreme Learning Machine for Brain Tumor MRI Classification",
-                "accuracy": "98.05% (±0.16%)",
-                "precision": "98.06%",
-                "recall": "98.05%",
-                "f1_score": "98.05%",
+                "accuracy": "96.13% (±0.17%)",
+                "precision": "96.18%",
+                "recall": "96.13%",
+                "f1_score": "96.13%",
                 "dataset_scale": "13,994 scans (5 Multi-Center sources)",
                 "backbone": "Hybrid PDSCNN (256-d) + ViT (128-d) = 384-d",
-                "classifier": "RRELM (4,096 hidden neurons, C=500.0)",
+                "classifier": "RRELM (8,192 hidden neurons, C=0.05)",
                 "xai": "Dual-Branch Visual XAI (Grad-CAM + ViT Attention Rollout + Cranial Masking)"
             }
         },
-        "device": device.upper(),
-        "architecture": "Parallel CNN (PDSCNN) + Vision Transformer (ViT) + RRELM",
-        "feature_dim": 384,
-        "rrelm_neurons": 4096,
-        "best_ridge_c": 0.1,
-        "classes": classes,
-        "class_labels": {
-            "glioma": "Glioma Tumor",
-            "meningioma": "Meningioma Tumor",
-            "notumor": "Healthy (No Tumor)",
-            "pituitary": "Pituitary Tumor"
-        },
-        "metrics": {
-            "glioma": {"precision": 98.18, "recall": 95.58, "f1": 0.9686, "support": 226},
-            "meningioma": {"precision": 96.85, "recall": 95.72, "f1": 0.9628, "support": 257},
-            "notumor": {"precision": 98.99, "recall": 100.00, "f1": 0.9949, "support": 391},
-            "pituitary": {"precision": 97.56, "recall": 99.07, "f1": 0.9831, "support": 323}
-        },
         "confusion_matrix": {
             "matrix": [
-                [216, 8, 0, 2],
-                [4, 246, 4, 3],
-                [0, 0, 391, 0],
-                [0, 3, 0, 320]
+                [417, 35, 41, 7],
+                [6, 484, 15, 10],
+                [0, 5, 500, 0],
+                [0, 1, 1, 472]
             ],
             "labels": ["Glioma", "Meningioma", "No Tumor", "Pituitary"]
         },
         "training_history": [
-            {"epoch": 1, "loss": 1.385, "train_acc": 42.5, "test_acc": 64.2},
-            {"epoch": 10, "loss": 0.724, "train_acc": 74.8, "test_acc": 83.5},
-            {"epoch": 25, "loss": 0.381, "train_acc": 88.6, "test_acc": 92.1},
-            {"epoch": 45, "loss": 0.192, "train_acc": 94.3, "test_acc": 95.8},
-            {"epoch": 65, "loss": 0.086, "train_acc": 97.9, "test_acc": 97.4},
-            {"epoch": 80, "loss": 0.042, "train_acc": 99.2, "test_acc": 98.0}
+            {"epoch": 1, "loss": 0.9559, "train_acc": 70.1, "test_acc": 57.6},
+            {"epoch": 10, "loss": 0.3382, "train_acc": 91.6, "test_acc": 77.0},
+            {"epoch": 25, "loss": 0.2300, "train_acc": 96.1, "test_acc": 83.0},
+            {"epoch": 40, "loss": 0.1838, "train_acc": 98.1, "test_acc": 91.7},
+            {"epoch": 50, "loss": 0.1684, "train_acc": 98.7, "test_acc": 92.5},
+            {"epoch": 60, "loss": 0.1607, "train_acc": 99.0, "test_acc": 93.4}
         ],
         "grid_search": [
-            {"c": 0.01, "accuracy": 96.10},
-            {"c": 0.1, "accuracy": 98.00},
-            {"c": 1.0, "accuracy": 97.80},
-            {"c": 10.0, "accuracy": 97.20},
-            {"c": 50.0, "accuracy": 96.85},
-            {"c": 100.0, "accuracy": 96.40},
-            {"c": 500.0, "accuracy": 95.10}
+            {"c": 0.01, "accuracy": 28.59},
+            {"c": 0.05, "accuracy": 93.98},
+            {"c": 0.1, "accuracy": 93.83},
+            {"c": 0.5, "accuracy": 93.68},
+            {"c": 1.0, "accuracy": 93.68},
+            {"c": 50.0, "accuracy": 93.28},
+            {"c": 500.0, "accuracy": 93.48}
         ],
         "preprocessing": {
             "resolution": "124x124 RGB",

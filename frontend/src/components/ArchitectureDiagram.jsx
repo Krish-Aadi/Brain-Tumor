@@ -75,8 +75,8 @@ const NODES = {
     formula: 'β = (Hᵀ·H + C·I)⁻¹ · Hᵀ·T',
     summary: 'Replaces conventional slow iterative backpropagation dense layers with an analytically computed Ridge-Regularized Extreme Learning Machine.',
     details: [
-      '4096 hidden projection neurons with ReLU non-linear activation.',
-      'Ridge regularization parameter C=0.1 penalizes extreme weight magnitudes to prevent overfitting.',
+      '8192 hidden projection neurons with ReLU non-linear activation.',
+      'Ridge regularization parameter C=0.05 penalizes extreme weight magnitudes to prevent overfitting.',
       'Provides instantaneous closed-form output weight calculation with high numerical stability.'
     ]
   },
@@ -206,7 +206,7 @@ export default function ArchitectureDiagram() {
               <ShieldCheck size={18} style={{ color: '#f59e0b' }} />
               <div>
                 <div style={{ fontSize: '0.9rem', fontWeight: 700 }}>RRELM Classifier</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Regularized Extreme Learning Machine (C=0.1)</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Regularized Extreme Learning Machine (C=0.05)</div>
               </div>
             </div>
             <ChevronRight size={16} style={{ color: 'var(--text-muted)' }} />

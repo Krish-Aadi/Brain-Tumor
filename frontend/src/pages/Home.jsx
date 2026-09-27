@@ -109,7 +109,7 @@ export default function Home() {
 
           <div className="home-highlight-pill">
             <ShieldCheck size={16} style={{ color: '#f59e0b' }} />
-            <span>RRELM (C=0.1)</span>
+            <span>RRELM (C=0.05)</span>
           </div>
         </div>
       </div>

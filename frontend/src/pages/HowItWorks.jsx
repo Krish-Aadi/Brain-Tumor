@@ -79,7 +79,7 @@ export default function HowItWorks() {
               <h3 style={{ fontSize: '1.3rem' }}>RRELM Output & Explainable AI (XAI)</h3>
             </div>
             <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.65 }}>
-              The 384-dimensional fused vector is projected into 4096 hidden projection neurons and multiplied by the pre-solved Ridge Regularized matrix <code>β</code>. The resulting softmax logits yield 4-class probabilities (Glioma, Meningioma, Pituitary, Healthy Control), while Grad-CAM gradients and ViT attention maps are synthesized simultaneously for explainability.
+              The 384-dimensional fused vector is projected into 8192 hidden projection neurons and multiplied by the pre-solved Ridge Regularized matrix <code>β</code>. The resulting softmax logits yield 4-class probabilities (Glioma, Meningioma, Pituitary, Healthy Control), while Grad-CAM gradients and ViT attention maps are synthesized simultaneously for explainability.
             </p>
           </div>
         </div>

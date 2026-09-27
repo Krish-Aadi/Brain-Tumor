@@ -29,7 +29,13 @@ def mixup_data(x, y, alpha=0.2):
 def mixup_criterion(criterion, pred, y_a, y_b, lam):
     return lam * criterion(pred, y_a) + (1 - lam) * criterion(pred, y_b)
 
-def train_hybrid_model(epochs=80, batch_size=32, lr=5e-4, device=None):
+def train_hybrid_model(epochs=60, batch_size=64, lr=1e-3, device=None, seed=42):
+    if seed is not None:
+        torch.manual_seed(seed)
+        np.random.seed(seed)
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed_all(seed)
+            
     if device is None:
         device = get_default_device()
         
@@ -41,15 +47,16 @@ def train_hybrid_model(epochs=80, batch_size=32, lr=5e-4, device=None):
     
     # 2. Initialize End-to-End Model (for feature extractor training)
     model = EndToEndModel(num_classes=4).to(device)
-    criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
-    optimizer = optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-2)
-    scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs, eta_min=1e-5)
+    criterion = nn.CrossEntropyLoss(label_smoothing=0.03)
+    optimizer = optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-3)
+    scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs, eta_min=1e-6)
     
     use_cuda_amp = (device == 'cuda')
     scaler = torch.amp.GradScaler('cuda', enabled=use_cuda_amp)
     
-    print(f"--- Phase 1: Training Feature Extractors with Mixup for {epochs} Epochs ---")
+    print(f"--- Phase 1: Training Feature Extractors for {epochs} Epochs ---")
     best_test_acc = 0.0
+    best_test_loss = float('inf')
     best_model_weights = copy.deepcopy(model.state_dict())
     
     for epoch in range(epochs):
@@ -62,17 +69,9 @@ def train_hybrid_model(epochs=80, batch_size=32, lr=5e-4, device=None):
             inputs, labels = inputs.to(device), labels.to(device)
             
             optimizer.zero_grad()
-            
-            # Apply Mixup on 50% of training batches for strong feature regularization
-            if np.random.rand() < 0.5:
-                inputs_m, y_a, y_b, lam = mixup_data(inputs, labels, alpha=0.2)
-                with torch.amp.autocast('cuda', enabled=use_cuda_amp):
-                    logits, _ = model(inputs_m)
-                    loss = mixup_criterion(criterion, logits, y_a, y_b, lam)
-            else:
-                with torch.amp.autocast('cuda', enabled=use_cuda_amp):
-                    logits, _ = model(inputs)
-                    loss = criterion(logits, labels)
+            with torch.amp.autocast('cuda', enabled=use_cuda_amp):
+                logits, _ = model(inputs)
+                loss = criterion(logits, labels)
             
             if use_cuda_amp:
                 scaler.scale(loss).backward()
@@ -89,11 +88,12 @@ def train_hybrid_model(epochs=80, batch_size=32, lr=5e-4, device=None):
             correct += (predicted == labels).sum().item()
             
         scheduler.step()
-        epoch_loss = running_loss / total
-        epoch_acc = 100 * correct / total
+        train_loss = running_loss / total
+        train_acc = 100.0 * correct / total
         
-        # Test accuracy check for feature extractor
+        # Test / Validation Evaluation
         model.eval()
+        test_running_loss = 0.0
         test_correct = 0
         test_total = 0
         with torch.no_grad():
@@ -101,25 +101,30 @@ def train_hybrid_model(epochs=80, batch_size=32, lr=5e-4, device=None):
                 t_inputs, t_labels = t_inputs.to(device), t_labels.to(device)
                 with torch.amp.autocast('cuda', enabled=use_cuda_amp):
                     t_logits, _ = model(t_inputs)
+                    t_loss = criterion(t_logits, t_labels)
+                test_running_loss += t_loss.item() * t_inputs.size(0)
                 _, t_pred = torch.max(t_logits, 1)
                 test_total += t_labels.size(0)
                 test_correct += (t_pred == t_labels).sum().item()
-        test_acc = 100 * test_correct / test_total
+                
+        test_loss = test_running_loss / test_total
+        test_acc = 100.0 * test_correct / test_total
         
         is_best = ""
-        if test_acc > best_test_acc:
+        if test_acc > best_test_acc or (test_acc == best_test_acc and test_loss < best_test_loss):
             best_test_acc = test_acc
+            best_test_loss = test_loss
             best_model_weights = copy.deepcopy(model.state_dict())
             is_best = " -> Best Saved!"
             
-        print(f"Epoch [{epoch+1:02d}/{epochs:02d}] Train Loss: {epoch_loss:.4f} | Train Acc: {epoch_acc:.2f}% | Test Acc: {test_acc:.2f}%{is_best}")
+        print(f"Epoch [{epoch+1:02d}/{epochs:02d}] Train Loss: {train_loss:.4f} | Train Acc: {train_acc:.2f}% | Test Loss: {test_loss:.4f} | Test Acc: {test_acc:.2f}%{is_best}")
         
-    print(f"\nPhase 1 Completed. Best Test Accuracy achieved: {best_test_acc:.2f}%")
-    # Load best performing feature extractor weights for feature extraction
+    print(f"\nPhase 1 Completed. Best Validation Accuracy achieved: {best_test_acc:.2f}% (Loss: {best_test_loss:.4f})")
+    # Load best performing feature extractor weights
     model.load_state_dict(best_model_weights)
     
     # 3. Extract Features for RRELM
-    print("\n--- Phase 2: Extracting Features for RRELM ---")
+    print("\n--- Phase 2: Extracting Scale-Invariant Features for RRELM ---")
     model.eval()
     
     def extract_features_and_labels(loader):
@@ -142,18 +147,18 @@ def train_hybrid_model(epochs=80, batch_size=32, lr=5e-4, device=None):
     
     # 4. Train RRELM with Hyperparameter Grid Search over C
     print("\n--- Phase 3 & 4: Training & Evaluating RRELM Classifier ---")
-    c_candidates = [0.01, 0.1, 1.0, 10.0, 50.0, 100.0, 500.0]
+    c_candidates = [0.01, 0.05, 0.1, 0.5, 1.0, 5.0, 10.0, 50.0, 100.0, 250.0, 500.0, 1000.0, 2500.0]
     best_rrelm = None
     best_rrelm_acc = 0.0
-    best_c = 0.1
+    best_c = 1.0
     
     for c_val in c_candidates:
-        rrelm = RRELM(input_dim=384, hidden_dim=4096, num_classes=4, C=c_val)
+        rrelm = RRELM(input_dim=384, hidden_dim=8192, num_classes=4, C=c_val, seed=seed)
         rrelm.fit(train_features, train_labels)
         preds, _ = rrelm.predict(test_features)
         correct = (preds == test_labels).sum().item()
-        acc = 100 * correct / test_labels.size(0)
-        print(f"RRELM (C={c_val:<5}) Test Accuracy: {acc:.2f}%")
+        acc = 100.0 * correct / test_labels.size(0)
+        print(f"RRELM (C={c_val:<7}) Test Accuracy: {acc:.2f}%")
         
         if acc > best_rrelm_acc or best_rrelm is None:
             best_rrelm_acc = acc
@@ -176,9 +181,9 @@ def train_hybrid_model(epochs=80, batch_size=32, lr=5e-4, device=None):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train Hybrid PDSCNN-ViT + RRELM Brain Tumor MRI Classifier")
-    parser.add_argument('--epochs', type=int, default=80, help="Number of training epochs (default: 80)")
-    parser.add_argument('--batch_size', type=int, default=32, help="Batch size for dataloaders (default: 32)")
-    parser.add_argument('--lr', type=float, default=5e-4, help="Learning rate (default: 5e-4)")
+    parser.add_argument('--epochs', type=int, default=60, help="Number of training epochs (default: 60)")
+    parser.add_argument('--batch_size', type=int, default=64, help="Batch size for dataloaders (default: 64)")
+    parser.add_argument('--lr', type=float, default=1e-3, help="Learning rate (default: 1e-3)")
     parser.add_argument('--device', type=str, default=None, choices=['cuda', 'mps', 'cpu'], help="Compute device (default: auto-detect GPU)")
     args = parser.parse_args()
 

@@ -113,9 +113,9 @@ export const apiService = {
         architecture: "Parallel CNN (PDSCNN) + Vision Transformer (ViT) + RRELM",
         input_resolution: "124 × 124",
         classes: ['glioma', 'meningioma', 'notumor', 'pituitary'],
-        overall_accuracy: 98.00,
-        macro_f1: 0.9774,
-        total_test_images: 1197
+        overall_accuracy: 96.13,
+        macro_f1: 0.9613,
+        total_test_images: 1994
       };
     }
   },
@@ -129,7 +129,7 @@ export const apiService = {
         success: true,
         architecture: "Parallel CNN (PDSCNN) + Vision Transformer (ViT) + RRELM",
         feature_dim: 384,
-        rrelm_neurons: 4096,
+        rrelm_neurons: 8192,
         classes: ['glioma', 'meningioma', 'notumor', 'pituitary']
       };
     }
