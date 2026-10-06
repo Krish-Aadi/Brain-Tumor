@@ -1,22 +1,22 @@
-# 🧠 Brain Tumor MRI Classification with Hybrid CNN-ViT & RRELM
+# 🧠 Brain Tumor MRI Classification with Hybrid CNN-ViT & 5-Seed Ensemble RRELM
 
-A state-of-the-art Deep Learning framework for multi-class Brain Tumor MRI image classification (`glioma`, `meningioma`, `notumor`, `pituitary`) integrating **Parallel Depthwise Separable Convolutional Neural Networks (PDSCNN)**, **Vision Transformers (ViT)**, and **Regularized Ridge Extreme Learning Machines (RRELM)** with **Grad-CAM & ViT Self-Attention visual interpretability**.
+A state-of-the-art Deep Learning framework for multi-class Brain Tumor MRI image classification (`glioma`, `meningioma`, `notumor`, `pituitary`) integrating **Parallel Depthwise Separable Convolutional Neural Networks (PDSCNN)**, **Vision Transformers (ViT)**, and **5-Seed Ensemble Regularized Ridge Extreme Learning Machines (RRELM)** with **Grad-CAM & ViT Self-Attention visual interpretability**.
 
 ---
 
 ## 🌟 Key Highlights & Performance
 
-* **5-Fold Stratified Cross-Validation:** **96.13% (±0.17%)** Mean Accuracy across all **13,994 patient MRI scans**.
+* **5-Fold Stratified Cross-Validation:** **97.68% (±0.24%)** Mean Accuracy across all **13,994 patient MRI scans**.
 * **High Precision & Generalization:**
-  * **Glioma:** 98.58% Precision | 83.40% Recall
-  * **Meningioma:** 92.37% Precision | 93.98% Recall
-  * **Healthy (No Tumor):** 89.78% Precision | 99.21% Recall
-  * **Pituitary:** 96.52% Precision | 99.58% Recall
+  * **Glioma:** 98.81% Precision | 83.20% Recall
+  * **Meningioma:** 92.90% Precision | 93.98% Recall
+  * **Healthy (No Tumor):** 89.50% Precision | 99.60% Recall
+  * **Pituitary:** 96.33% Precision | 99.58% Recall
 * **Dataset Scale:** **13,994 total MRI scans** integrated across 5 open-source Kaggle datasets:
   * **12,000 Training Scans** (3,000 per class — 100% Balanced with CLAHE & Mixup augmentation)
   * **1,994 Independent Test Scans** (Multi-hospital benchmark evaluation)
 * **Hardware Acceleration:** Native PyTorch support for **Apple Silicon GPU (MPS)** and **NVIDIA GPU (CUDA)**.
-* **Explainable AI (XAI):** Dual-branch visual heatmaps combining **PDSCNN Grad-CAM** (local lesion boundaries) and **ViT Self-Attention Maps** (global contextual dependencies).
+* **Explainable AI (XAI):** Dual-branch visual heatmaps combining **PDSCNN Grad-CAM** (local lesion boundaries) and **ViT Self-Attention Maps** (global contextual dependencies) with real-time quantitative lesion geometry.
 * **Interactive Cyber-Radiology Console:** Modern Web Dashboard featuring live MRI drag-and-drop, 1-click test gallery, side-by-side inspection, and printable PDF diagnostic reports.
 
 ---
@@ -37,11 +37,11 @@ A state-of-the-art Deep Learning framework for multi-class Brain Tumor MRI image
                              [ Hybrid Feature Fusion (384-dim) ]
                                               │
                                               ▼
-                   [ Regularized Ridge Extreme Learning Machine (RRELM) ]
-                                (8,192 Hidden Neurons, C=0.05)
+               [ 5-Seed Bagging Ensemble Regularized Ridge ELM (Ensemble RRELM) ]
+                 (5 Heads × 8,192 Hidden Neurons each, Kaiming scaled, C=0.1)
                                               │
                                               ▼
-                       [ Class Prediction & Dual-Branch Heatmap Overlay ]
+                        [ Class Prediction & Dual-Branch Heatmap Overlay ]
 ```
 
 ---
@@ -53,13 +53,13 @@ Evaluated across all **13,994 scans** with 5 independent folds:
 ```
 Fold     | Train Scans | Test Scans | Train Acc   | Test Acc   | Precision  | Recall     | F1-Score  
 -------------------------------------------------------------------------------------------------
-Fold 1   | 11195       | 2799       |  96.15%     |  96.18%    |  96.22%    |  96.18%    |  96.17%
-Fold 2   | 11195       | 2799       |  96.16%     |  96.14%    |  96.17%    |  96.14%    |  96.13%
-Fold 3   | 11195       | 2799       |  96.15%     |  96.21%    |  96.27%    |  96.21%    |  96.21%
-Fold 4   | 11195       | 2799       |  96.14%     |  96.32%    |  96.35%    |  96.32%    |  96.32%
-Fold 5   | 11196       | 2798       |  96.23%     |  95.82%    |  95.87%    |  95.82%    |  95.80%
+Fold 1   | 11195       | 2799       |  98.74%     |  97.50%    |  97.50%    |  97.50%    |  97.49%
+Fold 2   | 11195       | 2799       |  98.70%     |  97.64%    |  97.66%    |  97.64%    |  97.64%
+Fold 3   | 11195       | 2799       |  98.69%     |  97.36%    |  97.35%    |  97.36%    |  97.35%
+Fold 4   | 11195       | 2799       |  98.55%     |  97.93%    |  97.93%    |  97.93%    |  97.92%
+Fold 5   | 11196       | 2798       |  98.60%     |  97.96%    |  97.97%    |  97.96%    |  97.96%
 =================================================================================================
-AVERAGE  |             |            |  96.17%     |  96.13%    |  96.18%    |  96.13%    |  96.13% (±0.17%)
+AVERAGE  | 11195       | 2799       |  98.66%     |  97.68%    |  97.68%    |  97.68%    |  0.9767 (±0.24%)
 =================================================================================================
 ```
 

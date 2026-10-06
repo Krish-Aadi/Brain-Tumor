@@ -40,10 +40,10 @@ export default function DiagnosticPanel({ resultData, onReset, onOpenReport }) {
         </div>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <span style={{ background: 'rgba(16, 185, 129, 0.15)', color: 'var(--notumor-color)', padding: '2px 8px', borderRadius: '6px', fontWeight: 600 }}>
-            96.1% Accuracy
+            97.68% Accuracy
           </span>
           <span style={{ background: 'rgba(56, 189, 248, 0.15)', color: 'var(--cyan-electric)', padding: '2px 8px', borderRadius: '6px', fontWeight: 600 }}>
-            99.2% Recall
+            99.6% Recall
           </span>
         </div>
       </div>

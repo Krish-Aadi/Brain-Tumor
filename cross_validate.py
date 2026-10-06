@@ -14,8 +14,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 from dataset_loader import BrainTumorDataset
-from model import HybridFeatureExtractor, EndToEndModel, RRELM
-from train import mixup_data, mixup_criterion
+from model import HybridFeatureExtractor, EndToEndModel, RRELM, EnsembleRRELM
 
 def get_default_device():
     if torch.cuda.is_available():
@@ -63,7 +62,7 @@ def load_combined_dataset(root_dir='dataset'):
 
     return UnifiedDataset(all_paths, all_labels), np.array(all_labels)
 
-def run_fast_feature_kfold(n_splits=5, device=None, root_dir='dataset', c_val=500.0):
+def run_fast_feature_kfold(n_splits=5, device=None, root_dir='dataset', c_val=0.1):
     """
     Fast K-Fold: Extracts 384-dim features across all 13,994 scans
     and reports both Training Accuracy and Testing/Validation Accuracy for each fold.
@@ -77,7 +76,7 @@ def run_fast_feature_kfold(n_splits=5, device=None, root_dir='dataset', c_val=50
         return
 
     print(f"\n=========================================================================================")
-    print(f"               ⚡ {n_splits}-FOLD STRATIFIED CROSS-VALIDATION (TRAIN & TEST ACCURACY)")
+    print(f"       ⚡ {n_splits}-FOLD STRATIFIED CROSS-VALIDATION (5-SEED ENSEMBLE RRELM)")
     print(f"=========================================================================================")
     print(f"Compute Device : {device}")
     
@@ -117,20 +116,22 @@ def run_fast_feature_kfold(n_splits=5, device=None, root_dir='dataset', c_val=50
     print(f"\n{'Fold':<8} | {'Train Scans':<11} | {'Test Scans':<10} | {'Train Acc':<11} | {'Test Acc':<10} | {'Precision':<10} | {'Recall':<10} | {'F1-Score':<10}")
     print("-" * 97)
 
+    seeds = [42, 123, 456, 789, 1024]
+
     for fold_idx, (train_idx, val_idx) in enumerate(skf.split(X, y), 1):
         X_train, y_train = X[train_idx], y[train_idx]
         X_val, y_val = X[val_idx], y[val_idx]
 
-        rrelm = RRELM(input_dim=384, hidden_dim=8192, num_classes=4, C=c_val)
-        rrelm.fit(X_train, y_train)
+        ensemble = EnsembleRRELM(input_dim=384, hidden_dim=8192, num_classes=4, C=c_val, seeds=seeds)
+        ensemble.fit(X_train, y_train)
 
         # Train Accuracy
-        train_preds, _ = rrelm.predict(X_train)
+        train_preds, _ = ensemble.predict(X_train, temperature=0.02)
         train_acc = accuracy_score(y_train.numpy(), train_preds.numpy()) * 100
         train_accuracies.append(train_acc)
 
         # Test/Validation Accuracy & Metrics
-        val_preds, _ = rrelm.predict(X_val)
+        val_preds, _ = ensemble.predict(X_val, temperature=0.02)
         preds_np = val_preds.numpy()
         y_val_np = y_val.numpy()
 
@@ -182,7 +183,7 @@ def plot_kfold_summary(train_accs, test_accs, f1_scores, n_splits):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Stratified K-Fold Cross-Validation for Brain Tumor MRI")
     parser.add_argument('--folds', type=int, default=5, help="Number of folds (default: 5)")
-    parser.add_argument('--c', type=float, default=500.0, help="RRELM Ridge Parameter C (default: 500.0)")
+    parser.add_argument('--c', type=float, default=0.1, help="Ensemble RRELM Ridge Parameter C (default: 0.1)")
     parser.add_argument('--device', type=str, default=None, help="Device (cuda, mps, cpu)")
     args = parser.parse_args()
 

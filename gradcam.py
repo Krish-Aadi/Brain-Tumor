@@ -250,3 +250,67 @@ if __name__ == "__main__":
             break
             
     print(f"GradCAM & ViT ready for {len(samples_per_class)} classes.")
+
+def extract_tumor_geometry(cam, target_class, classes=('glioma', 'meningioma', 'notumor', 'pituitary')):
+    """
+    Extracts quantitative lesion bounding box, centroid, area percentage, and anatomical quadrant
+    from the activation heatmap.
+    """
+    if isinstance(target_class, int):
+        target_name = classes[target_class]
+    else:
+        target_name = str(target_class).lower()
+
+    if target_name == 'notumor':
+        return {
+            "has_lesion": False,
+            "bounding_box": None,
+            "centroid": None,
+            "area_percentage": 0.0,
+            "quadrant": "Normal / No Lesion Detected"
+        }
+
+    # Threshold heatmap for significant lesion core
+    threshold = 0.55
+    binary_mask = (cam >= threshold).astype(np.uint8)
+
+    y_indices, x_indices = np.where(binary_mask == 1)
+    if len(y_indices) == 0:
+        threshold = 0.40
+        binary_mask = (cam >= threshold).astype(np.uint8)
+        y_indices, x_indices = np.where(binary_mask == 1)
+
+    if len(y_indices) == 0:
+        return {
+            "has_lesion": True,
+            "bounding_box": None,
+            "centroid": None,
+            "area_percentage": 0.0,
+            "quadrant": "Diffuse / Unlocalized"
+        }
+
+    ymin, ymax = int(np.min(y_indices)), int(np.max(y_indices))
+    xmin, xmax = int(np.min(x_indices)), int(np.max(x_indices))
+
+    cy = int(np.mean(y_indices))
+    cx = int(np.mean(x_indices))
+
+    total_pixels = cam.shape[0] * cam.shape[1]
+    area_pct = round(float(len(y_indices)) / total_pixels * 100, 2)
+
+    # Determine anatomical quadrant
+    h_mid = cam.shape[0] // 2
+    w_mid = cam.shape[1] // 2
+
+    vert = "Anterior" if cy < h_mid else "Posterior"
+    horiz = "Left" if cx < w_mid else "Right"
+    quadrant = f"{vert}-{horiz}"
+
+    return {
+        "has_lesion": True,
+        "bounding_box": {"x": xmin, "y": ymin, "w": xmax - xmin, "h": ymax - ymin},
+        "centroid": {"x": cx, "y": cy},
+        "area_percentage": area_pct,
+        "quadrant": quadrant
+    }
+

@@ -12,7 +12,7 @@ export default function Metrics() {
           <div className="section-tag">Empirical Evaluation & Performance</div>
           <h1 className="section-title">Model Metrics & Research Analytics</h1>
           <p className="section-subtitle">
-            Comprehensive quantitative analysis of the <strong>Parallel PDSCNN + Vision Transformer + RRELM</strong> architecture evaluated across <strong>13,994 multi-center brain MRI scans</strong> with 5-Fold Stratified Cross-Validation (<strong>96.13% ±0.17%</strong>).
+            Comprehensive quantitative analysis of the <strong>Parallel PDSCNN + Vision Transformer + 5-Seed Ensemble RRELM</strong> architecture evaluated across <strong>13,994 multi-center brain MRI scans</strong> with 5-Fold Stratified Cross-Validation (<strong>97.68% ±0.24%</strong>).
           </p>
         </div>
       </div>
@@ -35,19 +35,19 @@ export default function Metrics() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.82rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem', background: 'var(--bg-main)', borderRadius: 'var(--radius-sm)' }}>
                 <span>Glioma Scans (Balanced):</span>
-                <span style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--color-glioma)' }}>3,000 Scans (Prec: 98.58%)</span>
+                <span style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--color-glioma)' }}>3,000 Scans (Prec: 98.81%)</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem', background: 'var(--bg-main)', borderRadius: 'var(--radius-sm)' }}>
                 <span>Meningioma Scans (Balanced):</span>
-                <span style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--color-meningioma)' }}>3,000 Scans (Prec: 92.37%)</span>
+                <span style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--color-meningioma)' }}>3,000 Scans (Prec: 92.90%)</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem', background: 'var(--bg-main)', borderRadius: 'var(--radius-sm)' }}>
                 <span>Pituitary Scans (Balanced):</span>
-                <span style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--color-pituitary)' }}>3,000 Scans (Prec: 96.52%)</span>
+                <span style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--color-pituitary)' }}>3,000 Scans (Prec: 96.33%)</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem', background: 'var(--bg-main)', borderRadius: 'var(--radius-sm)' }}>
                 <span>Healthy Control Scans (Balanced):</span>
-                <span style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--color-notumor)' }}>3,000 Scans (Rec: 99.21%)</span>
+                <span style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--color-notumor)' }}>3,000 Scans (Rec: 99.60%)</span>
               </div>
             </div>
           </div>

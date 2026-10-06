@@ -109,7 +109,7 @@ export default function PredictionCard({ result, onReset }) {
         }}>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '4px' }}>ARCHITECTURE</div>
           <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--accent-cyan)', marginTop: '8px' }}>
-            PDSCNN + ViT + RRELM
+            CNN-ViT + Ensemble RRELM
           </div>
         </div>
       </div>

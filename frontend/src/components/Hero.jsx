@@ -53,7 +53,7 @@ export default function Hero({ onStartDetectionClick }) {
           maxWidth: '740px',
           margin: '0 auto 2.5rem'
         }}>
-          Harnessing <strong>Parallel Depthwise Separable CNNs</strong> and <strong>Vision Transformers</strong> with an analytical <strong>Regularized Ridge Regression ELM</strong> for transparent, 4-class brain MRI classification and explainability.
+          Harnessing <strong>Parallel Depthwise Separable CNNs</strong> and <strong>Vision Transformers</strong> with a <strong>5-Seed Bagging Ensemble Regularized Ridge ELM (97.68% CV Accuracy)</strong> for transparent, 4-class brain MRI classification and explainability.
         </p>
 
         {/* CTAs */}
@@ -103,7 +103,7 @@ export default function Hero({ onStartDetectionClick }) {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <ShieldCheck size={16} style={{ color: 'var(--accent-indigo)' }} />
-            <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>RRELM (C=0.05)</span>
+            <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>5-Seed Ensemble RRELM (97.68%)</span>
           </div>
         </div>
       </div>

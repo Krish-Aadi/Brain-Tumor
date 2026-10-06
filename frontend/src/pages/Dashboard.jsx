@@ -164,9 +164,9 @@ export default function Dashboard() {
                   <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>CLASSIFIER ENGINE</span>
                   <Layers size={18} style={{ color: '#f59e0b' }} />
                 </div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 800 }}>RRELM (C=0.05)</div>
+                <div style={{ fontSize: '1.1rem', fontWeight: 800 }}>Ensemble RRELM (C=0.1)</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
-                  8192 Hidden Projection Neurons
+                  5 Heads × 8192 Neurons (97.68% CV)
                 </div>
               </div>
 
@@ -275,16 +275,16 @@ export default function Dashboard() {
 
               <div>
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.35rem' }}>
-                  RRELM Hidden Neurons
+                  Ensemble RRELM Hidden Neurons
                 </label>
-                <input type="text" value="8192 Hidden Projection Neurons" disabled style={{ width: '100%', opacity: 0.8 }} />
+                <input type="text" value="5 Heads × 8192 Neurons (Total 40,960)" disabled style={{ width: '100%', opacity: 0.8 }} />
               </div>
 
               <div>
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.35rem' }}>
                   Ridge Regularization Coefficient (C)
                 </label>
-                <input type="text" value="0.05 (L2 Tikhonov Regularization)" disabled style={{ width: '100%', opacity: 0.8 }} />
+                <input type="text" value="0.1 (5-Seed Ensemble Regularization)" disabled style={{ width: '100%', opacity: 0.8 }} />
               </div>
 
               <div>

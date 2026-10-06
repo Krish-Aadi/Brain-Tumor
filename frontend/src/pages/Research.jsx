@@ -232,13 +232,13 @@ export default function Research() {
                 </tr>
                 <tr style={{ background: 'var(--accent-cyan-glow)', borderBottom: '1px solid var(--border-medium)' }}>
                   <td style={{ padding: '0.85rem 1rem', fontWeight: 800, color: 'var(--accent-cyan)' }}>
-                    4. Proposed: PDSCNN + ViT + RRELM
+                    4. Proposed: PDSCNN + ViT + 5-Seed Ensemble RRELM
                   </td>
                   <td style={{ padding: '0.85rem 1rem', color: 'var(--color-notumor)', fontWeight: 700 }}>✓ 256-d</td>
                   <td style={{ padding: '0.85rem 1rem', color: 'var(--color-notumor)', fontWeight: 700 }}>✓ 128-d</td>
-                  <td style={{ padding: '0.85rem 1rem', fontWeight: 700, color: 'var(--accent-cyan)' }}>RRELM (C=0.05)</td>
+                  <td style={{ padding: '0.85rem 1rem', fontWeight: 700, color: 'var(--accent-cyan)' }}>Ensemble RRELM (C=0.1, 97.68% Acc)</td>
                   <td style={{ padding: '0.85rem 1rem', fontWeight: 600, color: 'var(--text-primary)' }}>
-                    Dual local/global representation with analytical L2 regularized decision boundary
+                    Dual local/global representation with 5-seed randomized bagging projection heads (zero-backpropagation overhead)
                   </td>
                 </tr>
               </tbody>

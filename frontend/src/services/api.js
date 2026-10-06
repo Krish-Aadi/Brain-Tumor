@@ -110,11 +110,11 @@ export const apiService = {
     } catch (error) {
       return {
         success: true,
-        architecture: "Parallel CNN (PDSCNN) + Vision Transformer (ViT) + RRELM",
+        architecture: "Parallel CNN (PDSCNN) + Vision Transformer (ViT) + 5-Seed Ensemble RRELM",
         input_resolution: "124 × 124",
         classes: ['glioma', 'meningioma', 'notumor', 'pituitary'],
-        overall_accuracy: 96.13,
-        macro_f1: 0.9613,
+        overall_accuracy: 97.68,
+        macro_f1: 0.9767,
         total_test_images: 1994
       };
     }
@@ -127,9 +127,10 @@ export const apiService = {
     } catch (error) {
       return {
         success: true,
-        architecture: "Parallel CNN (PDSCNN) + Vision Transformer (ViT) + RRELM",
+        architecture: "Parallel CNN (PDSCNN) + Vision Transformer (ViT) + 5-Seed Ensemble RRELM",
         feature_dim: 384,
         rrelm_neurons: 8192,
+        best_ridge_c: 0.1,
         classes: ['glioma', 'meningioma', 'notumor', 'pituitary']
       };
     }

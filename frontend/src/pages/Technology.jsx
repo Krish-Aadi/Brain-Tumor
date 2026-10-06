@@ -204,12 +204,12 @@ export default function Technology() {
             </div>
             <div>
               <div style={{ fontSize: '0.8rem', color: '#f59e0b', fontWeight: 700 }}>ANALYTICAL CLASSIFIER</div>
-              <h2 style={{ fontSize: '1.6rem' }}>Regularized Ridge Regression ELM (RRELM)</h2>
+              <h2 style={{ fontSize: '1.6rem' }}>5-Seed Bagging Ensemble Regularized Ridge ELM</h2>
             </div>
           </div>
 
           <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '1.5rem' }}>
-            Rather than relying on iterative gradient descent with backpropagation in the classification head, the fused 384-dimensional features are mapped into a high-dimensional feature space (8192 hidden projection neurons) and solved analytically via <strong>Tikhonov (L2) Regularized Ridge Regression</strong>.
+            Rather than relying on iterative gradient descent with backpropagation in the classification head or a single random projection, the fused 384-dimensional features are passed through a <strong>5-Seed Bagging Ensemble of Regularized Ridge Extreme Learning Machines</strong> (seeds: [42, 123, 456, 789, 1024], 8,192 hidden neurons each) and solved analytically via <strong>Tikhonov (L2) Regularized Ridge Regression</strong>.
           </p>
 
           <div style={{
@@ -223,11 +223,11 @@ export default function Technology() {
             marginBottom: '1.5rem',
             overflowX: 'auto'
           }}>
-            β = (Hᵀ·H + C·I)⁻¹ · Hᵀ·T
+            β_k = (H_kᵀ·H_k + C·I)⁻¹ · H_kᵀ·T,  where k ∈ Seeds(5), C = 0.1
           </div>
 
           <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-            Where <code>H</code> is the hidden-layer randomized projection matrix, <code>T</code> is the one-hot target matrix, and <code>C = 0.05</code> is the ridge regularization penalty coefficient that prevents singular inversion and stabilizes generalized decision boundaries.
+            Where each <code>H_k</code> is a distinct randomized projection matrix, <code>T</code> is the one-hot target matrix, and <code>C = 0.1</code> is the ridge regularization penalty coefficient. Averaging class probability distributions across the 5 independent projection seeds eliminates random matrix variance, boosting 5-fold cross-validation accuracy to <strong>97.68% (±0.24%)</strong> without adding any trainable backpropagation parameters.
           </p>
         </section>
 

@@ -396,11 +396,11 @@ export default function MetricsDashboard() {
   const [activeModelView, setActiveModelView] = useState('all');
 
   const KFOLD_DATA = [
-    { fold: 'Fold 1', train_scans: '11,195', test_scans: '2,799', train_acc: '96.15%', test_acc: '96.18%', precision: '96.22%', recall: '96.18%', f1: '96.17%' },
-    { fold: 'Fold 2', train_scans: '11,195', test_scans: '2,799', train_acc: '96.16%', test_acc: '96.14%', precision: '96.17%', recall: '96.14%', f1: '96.13%' },
-    { fold: 'Fold 3', train_scans: '11,195', test_scans: '2,799', train_acc: '96.15%', test_acc: '96.21%', precision: '96.27%', recall: '96.21%', f1: '96.21%' },
-    { fold: 'Fold 4', train_scans: '11,195', test_scans: '2,799', train_acc: '96.14%', test_acc: '96.32%', precision: '96.35%', recall: '96.32%', f1: '96.32%' },
-    { fold: 'Fold 5', train_scans: '11,196', test_scans: '2,798', train_acc: '96.23%', test_acc: '95.82%', precision: '95.87%', recall: '95.82%', f1: '95.80%' },
+    { fold: 'Fold 1', train_scans: '11,195', test_scans: '2,799', train_acc: '98.74%', test_acc: '97.50%', precision: '97.50%', recall: '97.50%', f1: '97.49%' },
+    { fold: 'Fold 2', train_scans: '11,195', test_scans: '2,799', train_acc: '98.70%', test_acc: '97.64%', precision: '97.66%', recall: '97.64%', f1: '97.64%' },
+    { fold: 'Fold 3', train_scans: '11,195', test_scans: '2,799', train_acc: '98.69%', test_acc: '97.36%', precision: '97.35%', recall: '97.36%', f1: '97.35%' },
+    { fold: 'Fold 4', train_scans: '11,195', test_scans: '2,799', train_acc: '98.55%', test_acc: '97.93%', precision: '97.93%', recall: '97.93%', f1: '97.92%' },
+    { fold: 'Fold 5', train_scans: '11,196', test_scans: '2,798', train_acc: '98.60%', test_acc: '97.96%', precision: '97.97%', recall: '97.96%', f1: '97.96%' },
   ];
 
   return (
@@ -417,10 +417,10 @@ export default function MetricsDashboard() {
             5-FOLD MEAN ACCURACY
           </div>
           <div style={{ fontSize: '2.2rem', fontWeight: 900, color: 'var(--accent-cyan)', fontFamily: 'Outfit' }}>
-            96.13%
+            97.68%
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--color-notumor)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <CheckCircle2 size={13} /> ±0.17% Across 13,994 Scans
+            <CheckCircle2 size={13} /> ±0.24% Across 13,994 Scans
           </div>
         </div>
 
@@ -429,7 +429,7 @@ export default function MetricsDashboard() {
             MEAN PRECISION
           </div>
           <div style={{ fontSize: '2.2rem', fontWeight: 900, color: 'var(--accent-teal)', fontFamily: 'Outfit' }}>
-            96.18%
+            97.68%
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
             High positive predictive rate
@@ -441,10 +441,10 @@ export default function MetricsDashboard() {
             MEAN RECALL (SENSITIVITY)
           </div>
           <div style={{ fontSize: '2.2rem', fontWeight: 900, color: 'var(--accent-indigo)', fontFamily: 'Outfit' }}>
-            96.13%
+            97.68%
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--color-notumor)' }}>
-            99.21% Recall on Healthy Scans
+            99.60% Recall on Healthy Scans
           </div>
         </div>
 
@@ -453,10 +453,10 @@ export default function MetricsDashboard() {
             MACRO F1-SCORE
           </div>
           <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#f59e0b', fontFamily: 'Outfit' }}>
-            0.9613
+            0.9767
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-            384-d Fusion + Analytical RRELM
+            384-d Fusion + 5-Seed Ensemble RRELM
           </div>
         </div>
       </div>
@@ -473,7 +473,7 @@ export default function MetricsDashboard() {
             </p>
           </div>
           <div style={{ background: 'rgba(6, 182, 212, 0.12)', color: 'var(--accent-cyan)', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, fontFamily: 'JetBrains Mono' }}>
-            Mean: 96.13% (±0.17%)
+            Mean: 97.68% (±0.24%)
           </div>
         </div>
 
@@ -508,11 +508,11 @@ export default function MetricsDashboard() {
                 <td style={{ padding: '0.85rem 1rem', fontWeight: 800, color: 'var(--accent-cyan)' }}>OVERALL AVERAGE</td>
                 <td style={{ padding: '0.85rem 1rem', fontFamily: 'JetBrains Mono', fontWeight: 700 }}>11,195</td>
                 <td style={{ padding: '0.85rem 1rem', fontFamily: 'JetBrains Mono', fontWeight: 700 }}>2,799</td>
-                <td style={{ padding: '0.85rem 1rem', fontFamily: 'JetBrains Mono', fontWeight: 700 }}>96.17%</td>
-                <td style={{ padding: '0.85rem 1rem', fontFamily: 'JetBrains Mono', fontWeight: 800, color: 'var(--color-notumor)' }}>96.13% (±0.17%)</td>
-                <td style={{ padding: '0.85rem 1rem', fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--accent-teal)' }}>96.18%</td>
-                <td style={{ padding: '0.85rem 1rem', fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--accent-indigo)' }}>96.13%</td>
-                <td style={{ padding: '0.85rem 1rem', fontFamily: 'JetBrains Mono', fontWeight: 800, color: 'var(--accent-cyan)' }}>96.13%</td>
+                <td style={{ padding: '0.85rem 1rem', fontFamily: 'JetBrains Mono', fontWeight: 700 }}>98.66%</td>
+                <td style={{ padding: '0.85rem 1rem', fontFamily: 'JetBrains Mono', fontWeight: 800, color: 'var(--color-notumor)' }}>97.68% (±0.24%)</td>
+                <td style={{ padding: '0.85rem 1rem', fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--accent-teal)' }}>97.68%</td>
+                <td style={{ padding: '0.85rem 1rem', fontFamily: 'JetBrains Mono', fontWeight: 700, color: 'var(--accent-indigo)' }}>97.68%</td>
+                <td style={{ padding: '0.85rem 1rem', fontFamily: 'JetBrains Mono', fontWeight: 800, color: 'var(--accent-cyan)' }}>97.67%</td>
               </tr>
             </tbody>
           </table>
@@ -638,10 +638,10 @@ export default function MetricsDashboard() {
             </div>
             <div>
               <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-                Classification – Combined Parallel Fusion + RRELM (384d)
+                Classification – Combined Parallel Fusion + 5-Seed Ensemble RRELM (384d)
               </h3>
               <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                End-to-end hybrid feature concatenation with Regularized Ridge ELM (96.13% Accuracy)
+                End-to-end hybrid feature concatenation with 5-Seed Ensemble Regularized Ridge ELM (97.68% Accuracy)
               </span>
             </div>
           </div>
