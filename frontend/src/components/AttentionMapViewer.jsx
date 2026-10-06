@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import { Sparkles, Layers, Grid, Info } from 'lucide-react';
 
-export default function AttentionMapViewer({ originalImage, vitAttentionImage, predictedClass }) {
+export default function AttentionMapViewer({ originalImage, vitAttentionImage, vitRawImage, predictedClass }) {
   const [viewMode, setViewMode] = useState('overlay'); // 'original' | 'attention' | 'overlay'
   const [showPatchGrid, setShowPatchGrid] = useState(false);
+
+  const displayImage = viewMode === 'original'
+    ? (originalImage || vitAttentionImage)
+    : viewMode === 'attention'
+    ? (vitRawImage || vitAttentionImage)
+    : (vitAttentionImage || originalImage);
 
   return (
     <div className="card-panel" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)' }}>
@@ -57,9 +63,9 @@ export default function AttentionMapViewer({ originalImage, vitAttentionImage, p
 
       {/* Image Display Canvas */}
       <div className="mri-preview-container" style={{ position: 'relative', overflow: 'hidden' }}>
-        {vitAttentionImage ? (
+        {displayImage ? (
           <img
-            src={viewMode === 'original' ? (originalImage || vitAttentionImage) : vitAttentionImage}
+            src={displayImage}
             alt="ViT Attention Map"
             className="mri-image-display"
           />

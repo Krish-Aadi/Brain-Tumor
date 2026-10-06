@@ -3,6 +3,9 @@
 temp_*
 scratch/
 
+# Dependencies
+node_modules/
+frontend/node_modules/
 
 # Virtual Environment
 venv/
@@ -19,4 +22,5 @@ __pycache__/
 .DS_Store
 .vscode/
 .idea/
+
 

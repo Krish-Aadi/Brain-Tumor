@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import { Eye, Info, Sliders, Layers } from 'lucide-react';
 
-export default function GradCAMViewer({ originalImage, gradcamImage, predictedClass }) {
+export default function GradCAMViewer({ originalImage, gradcamImage, gradcamRawImage, predictedClass }) {
   const [viewMode, setViewMode] = useState('overlay'); // 'original' | 'heatmap' | 'overlay'
   const [opacity, setOpacity] = useState(0.65);
+
+  const displayImage = viewMode === 'original'
+    ? (originalImage || gradcamImage)
+    : viewMode === 'heatmap'
+    ? (gradcamRawImage || gradcamImage)
+    : (gradcamImage || originalImage);
 
   return (
     <div className="card-panel" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)' }}>
@@ -57,9 +63,9 @@ export default function GradCAMViewer({ originalImage, gradcamImage, predictedCl
 
       {/* Image Display Canvas */}
       <div className="mri-preview-container" style={{ position: 'relative', overflow: 'hidden' }}>
-        {gradcamImage ? (
+        {displayImage ? (
           <img
-            src={viewMode === 'original' ? (originalImage || gradcamImage) : gradcamImage}
+            src={displayImage}
             alt="Grad-CAM Visualization"
             className="mri-image-display"
           />

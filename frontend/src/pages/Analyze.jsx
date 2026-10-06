@@ -112,6 +112,7 @@ export default function Analyze() {
               <GradCAMViewer
                 originalImage={resultData.original_image || previewImage}
                 gradcamImage={resultData.gradcam_image}
+                gradcamRawImage={resultData.gradcam_raw_image}
                 predictedClass={resultData.predicted_class}
               />
 
@@ -119,6 +120,7 @@ export default function Analyze() {
               <AttentionMapViewer
                 originalImage={resultData.original_image || previewImage}
                 vitAttentionImage={resultData.vit_attention_image}
+                vitRawImage={resultData.vit_raw_image}
                 predictedClass={resultData.predicted_class}
               />
             </div>
