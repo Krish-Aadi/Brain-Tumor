@@ -5,7 +5,7 @@ import cv2
 import torch
 import torch.nn.functional as F
 import numpy as np
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory
 
 from model import HybridFeatureExtractor
 from dataset_loader import BrainTumorDataset
@@ -119,7 +119,9 @@ def serve_frontend(path):
     dist_index = os.path.join(app.static_folder, 'index.html')
     if os.path.exists(dist_index):
         return send_from_directory(app.static_folder, 'index.html')
-    return render_template('index.html')
+    return jsonify({
+        "error": "Frontend build not found. Please run 'npm run build' inside the frontend/ directory."
+    }), 404
 
 @app.route('/api/predict', methods=['POST'])
 def predict():

@@ -111,8 +111,6 @@ Evaluated across all **13,994 MRI scans** with 5 independent stratified folds:
 │   ├── dist/                                  # Production frontend build
 │   ├── package.json                           # Frontend dependencies
 │   └── vite.config.js                         # Vite build configuration
-├── templates/
-│   └── index.html                             # Fallback HTML template
 ├── app.py                                     # Flask REST API & Web Server
 ├── model.py                                   # SE-PDSCNN, ViTBranch, HybridFeatureExtractor & RRELM
 ├── dataset_loader.py                          # CLAHE Preprocessing, Data Augmentation & DataLoader
