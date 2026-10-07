@@ -55,7 +55,7 @@ def predict_single_image(image_path, device=None):
     # Convert to Tensor [1, 3, 124, 124]
     tensor_img = processed_img.astype(np.float32) / 255.0
     tensor_img = np.transpose(tensor_img, (2, 0, 1))
-    tensor_img = torch.from_numpy(tensor_img).unsqueeze(0)
+    tensor_img = torch.from_numpy(tensor_img).unsqueeze(0).to(device)
 
     # 4. Run Grad-CAM & Prediction
     grad_cam = GradCAM(feature_extractor, rrelm_W, rrelm_b, rrelm_beta, device=device)

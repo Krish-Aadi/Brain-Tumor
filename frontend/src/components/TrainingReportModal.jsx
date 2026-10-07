@@ -26,10 +26,10 @@ export default function TrainingReportModal({ isOpen, onClose, reportData }) {
     },
     confusion_matrix: {
       matrix: [
-        [417, 35, 41, 7],
-        [6, 484, 15, 10],
-        [0, 5, 500, 0],
-        [0, 1, 1, 472]
+        [416, 35, 42, 7],
+        [5, 484, 16, 10],
+        [0, 2, 503, 0],
+        [0, 0, 2, 472]
       ],
       labels: ['Glioma', 'Meningioma', 'No Tumor', 'Pituitary']
     },
@@ -320,6 +320,18 @@ export default function TrainingReportModal({ isOpen, onClose, reportData }) {
               </div>
             </div>
 
+            {/* Publication K-Fold Plot */}
+            <div className="report-section-box" style={{ marginTop: '1.25rem', textAlign: 'center' }}>
+              <div className="section-title" style={{ marginBottom: '0.75rem' }}>
+                <CheckCircle2 size={16} />
+                <span>5-Fold Stratified Cross-Validation Benchmark Plot (97.68% ± 0.24%)</span>
+              </div>
+              <img 
+                src="/kfold_cv_results.png" 
+                alt="5-Fold Cross Validation Plot" 
+                style={{ maxWidth: '100%', maxHeight: '320px', borderRadius: '8px', objectFit: 'contain', background: '#ffffff', padding: '6px' }} 
+              />
+            </div>
           </div>
         )}
 
@@ -430,6 +442,19 @@ export default function TrainingReportModal({ isOpen, onClose, reportData }) {
                   </table>
                 </div>
               </div>
+            </div>
+
+            {/* Publication Confusion Matrix Heatmap */}
+            <div className="report-section-box" style={{ textAlign: 'center' }}>
+              <div className="section-title" style={{ marginBottom: '0.75rem' }}>
+                <Activity size={16} />
+                <span>Publication Heatmap: Test Split Evaluation (1,994 Scans – 94.03%)</span>
+              </div>
+              <img 
+                src="/confusion_matrix.png" 
+                alt="Confusion Matrix Heatmap" 
+                style={{ maxWidth: '100%', maxHeight: '360px', borderRadius: '8px', objectFit: 'contain', background: '#ffffff', padding: '6px' }} 
+              />
             </div>
           </div>
         )}

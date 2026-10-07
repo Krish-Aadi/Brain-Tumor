@@ -59,35 +59,26 @@ const FUSION_EPOCHS = [
 ];
 
 const PDSCNN_F1 = [
-  { name: 'Glioma', f1: 0.955 },
-  { name: 'Meningioma', f1: 0.950 },
-  { name: 'Pituitary Tumor', f1: 0.970 },
-  { name: 'No Tumor', f1: 0.986 },
+  { name: 'Glioma', f1: 0.854 },
+  { name: 'Meningioma', f1: 0.888 },
+  { name: 'No Tumor', f1: 0.915 },
+  { name: 'Pituitary', f1: 0.942 },
 ];
 
 const VIT_F1 = [
-  { name: 'Glioma', f1: 0.947 },
-  { name: 'Meningioma', f1: 0.943 },
-  { name: 'Pituitary Tumor', f1: 0.963 },
-  { name: 'No Tumor', f1: 0.982 },
+  { name: 'Glioma', f1: 0.838 },
+  { name: 'Meningioma', f1: 0.875 },
+  { name: 'No Tumor', f1: 0.904 },
+  { name: 'Pituitary', f1: 0.931 },
 ];
 
 const FUSION_F1 = [
-  { name: 'Glioma', f1: 0.904 },
-  { name: 'Meningioma', f1: 0.932 },
+  { name: 'Glioma', f1: 0.903 },
+  { name: 'Meningioma', f1: 0.934 },
   { name: 'No Tumor', f1: 0.943 },
-  { name: 'Pituitary Tumor', f1: 0.980 },
+  { name: 'Pituitary', f1: 0.979 },
 ];
 
-const CONFUSION_MATRIX = {
-  labels: ['Glioma', 'Meningioma', 'No Tumor', 'Pituitary'],
-  matrix: [
-    [417, 35, 41, 7],
-    [6, 484, 15, 10],
-    [0, 5, 500, 0],
-    [0, 1, 1, 472]
-  ]
-};
 
 // Precise Scientific Line Graph Component
 function ScientificLineChart({ title, epochData, caption }) {
@@ -105,11 +96,11 @@ function ScientificLineChart({ title, epochData, caption }) {
   // X coordinate mapping (Epochs 1 to 15)
   const getX = (epoch) => padLeft + ((epoch - 1) / 14) * plotW;
 
-  // Y coordinate for Loss (0.1 to 0.7)
-  const getYLoss = (loss) => padBottom + plotH - ((loss - 0.1) / (0.7 - 0.1)) * plotH;
+  // Y coordinate for Loss (0.0 to 0.70)
+  const getYLoss = (loss) => padTop + plotH - ((loss - 0.0) / (0.70 - 0.0)) * plotH;
 
-  // Y coordinate for Accuracy (0.70 to 1.00)
-  const getYAcc = (acc) => padBottom + plotH - ((acc - 0.70) / (1.00 - 0.70)) * plotH;
+  // Y coordinate for Accuracy (0.65 to 1.00)
+  const getYAcc = (acc) => padTop + plotH - ((acc - 0.65) / (1.00 - 0.65)) * plotH;
 
   // SVG path generators
   const buildPath = (data, yFunc, key) => {
@@ -124,8 +115,8 @@ function ScientificLineChart({ title, epochData, caption }) {
   const valAccPath = buildPath(epochData, getYAcc, 'val_acc');
 
   // Horizontal tick values
-  const lossTicks = [0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1];
-  const accTicks = ['1.00', '0.95', '0.90', '0.85', '0.80', '0.75', '0.70'];
+  const lossTicks = [0.70, 0.60, 0.50, 0.40, 0.30, 0.20, 0.10, 0.00];
+  const accTicks = ['1.00', '0.95', '0.90', '0.85', '0.80', '0.75', '0.70', '0.65'];
 
   return (
     <div style={{
@@ -200,13 +191,13 @@ function ScientificLineChart({ title, epochData, caption }) {
 
           {/* Background Grid Lines & Ticks */}
           {lossTicks.map((val, idx) => {
-            const y = padTop + (idx / 6) * plotH;
+            const y = padTop + (idx / (lossTicks.length - 1)) * plotH;
             return (
               <g key={val}>
                 <line x1={padLeft} y1={y} x2={width - padRight} y2={y} stroke="#f1f5f9" strokeWidth="1" />
                 {/* Left Y Axis Tick (Loss) */}
                 <text x={padLeft - 8} y={y + 3.5} textAnchor="end" fill="#64748b" fontSize="10" fontFamily="Inter, sans-serif">
-                  {val.toFixed(1)}
+                  {val.toFixed(2)}
                 </text>
                 {/* Right Y Axis Tick (Accuracy) */}
                 <text x={width - padRight + 8} y={y + 3.5} textAnchor="start" fill="#64748b" fontSize="10" fontFamily="Inter, sans-serif">
@@ -275,13 +266,13 @@ function ScientificBarChart({ title, f1Data, caption }) {
   const plotW = width - padLeft - padRight;
   const plotH = height - padTop - padBottom;
 
-  const yTicks = [1.00, 0.95, 0.90, 0.85, 0.80];
+  const yTicks = [1.00, 0.95, 0.90, 0.85, 0.80, 0.75];
 
-  const getY = (val) => padTop + plotH - ((val - 0.80) / (1.00 - 0.80)) * plotH;
+  const getY = (val) => padTop + plotH - ((val - 0.75) / (1.00 - 0.75)) * plotH;
 
   const numBars = f1Data.length;
   const slotW = plotW / numBars;
-  const barW = 56;
+  const barW = 54;
 
   return (
     <div style={{
@@ -313,7 +304,7 @@ function ScientificBarChart({ title, f1Data, caption }) {
         <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: 'auto', overflow: 'visible' }}>
           {/* Horizontal Grid Lines & Ticks */}
           {yTicks.map((val, idx) => {
-            const y = padTop + (idx / 4) * plotH;
+            const y = padTop + (idx / (yTicks.length - 1)) * plotH;
             return (
               <g key={val}>
                 <line x1={padLeft} y1={y} x2={width - padRight} y2={y} stroke="#f1f5f9" strokeWidth="1" />
@@ -323,6 +314,7 @@ function ScientificBarChart({ title, f1Data, caption }) {
               </g>
             );
           })}
+
 
           {/* Vertical Separator Grid Lines */}
           {f1Data.map((d, i) => {
@@ -517,6 +509,18 @@ export default function MetricsDashboard() {
             </tbody>
           </table>
         </div>
+
+        {/* High-Resolution Publication Plot */}
+        <div style={{ marginTop: '1.5rem', background: '#ffffff', borderRadius: '12px', border: '1px solid var(--border-subtle)', padding: '1rem', textAlign: 'center' }}>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Empirical Validation Chart: 5-Fold Stratified Cross-Validation (Mean 97.68%)
+          </div>
+          <img 
+            src="/kfold_cv_results.png" 
+            alt="5-Fold Cross-Validation Performance" 
+            style={{ maxWidth: '100%', maxHeight: '360px', borderRadius: '8px', objectFit: 'contain', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }} 
+          />
+        </div>
       </div>
 
       {/* View Switcher Tabs */}
@@ -661,55 +665,6 @@ export default function MetricsDashboard() {
         </div>
       )}
 
-      {/* 4. CONFUSION MATRIX TABLE */}
-      <div className="card-panel" style={{ background: 'var(--bg-surface)', padding: '1.75rem', marginTop: '2rem' }}>
-        <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.35rem' }}>
-          Confusion Matrix (1,994 Benchmark Test Scans)
-        </h3>
-        <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>
-          Breakdown of ground-truth radiologist diagnoses versus model classifications.
-        </p>
-
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center', fontSize: '0.88rem' }}>
-            <thead>
-              <tr>
-                <th style={{ padding: '0.75rem', color: 'var(--text-muted)', fontSize: '0.78rem' }}>True \ Predicted</th>
-                {CONFUSION_MATRIX.labels.map((l) => (
-                  <th key={l} style={{ padding: '0.75rem', color: 'var(--text-primary)', fontWeight: 700 }}>{l}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {CONFUSION_MATRIX.matrix.map((row, rowIdx) => (
-                <tr key={CONFUSION_MATRIX.labels[rowIdx]}>
-                  <td style={{ padding: '0.75rem', fontWeight: 700, textAlign: 'left', background: 'var(--bg-main)' }}>
-                    {CONFUSION_MATRIX.labels[rowIdx]}
-                  </td>
-                  {row.map((val, colIdx) => {
-                    const isDiagonal = rowIdx === colIdx;
-                    return (
-                      <td
-                        key={colIdx}
-                        style={{
-                          padding: '1rem',
-                          background: isDiagonal ? 'rgba(6, 182, 212, 0.18)' : (val > 0 ? 'rgba(244, 63, 94, 0.12)' : 'var(--bg-main)'),
-                          border: '1px solid var(--border-subtle)',
-                          fontFamily: 'JetBrains Mono',
-                          fontWeight: isDiagonal ? 800 : 500,
-                          color: isDiagonal ? 'var(--accent-cyan)' : (val > 0 ? '#ef4444' : 'var(--text-muted)')
-                        }}
-                      >
-                        {val}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
   );
 }

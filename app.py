@@ -331,10 +331,10 @@ def get_training_report():
         },
         "confusion_matrix": {
             "matrix": [
-                [417, 35, 41, 7],
-                [6, 484, 15, 10],
-                [0, 5, 500, 0],
-                [0, 1, 1, 472]
+                [416, 35, 42, 7],
+                [5, 484, 16, 10],
+                [0, 2, 503, 0],
+                [0, 0, 2, 472]
             ],
             "labels": ["Glioma", "Meningioma", "No Tumor", "Pituitary"]
         },

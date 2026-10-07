@@ -250,6 +250,79 @@ export default function Research() {
             <span>Benchmark evaluation framework designed for university peer-review and multi-center clinical validation experiments.</span>
           </div>
         </section>
+
+        {/* Section: Publication Figures & Visual Artifacts */}
+        <section className="card-panel" style={{ background: 'var(--bg-surface)', marginTop: '3.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
+            <div style={{
+              width: '42px',
+              height: '42px',
+              borderRadius: 'var(--radius-md)',
+              background: 'rgba(6, 182, 212, 0.1)',
+              color: 'var(--accent-cyan)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <Layers size={22} />
+            </div>
+            <div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--accent-cyan)', fontWeight: 700 }}>PUBLICATION VISUAL ARTIFACTS</div>
+              <h2 style={{ fontSize: '1.6rem' }}>Peer-Review Experimental Figures</h2>
+            </div>
+          </div>
+
+          <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '2rem' }}>
+            Synchronized empirical figures matching Table III, Table IV, and Section VIII of the scientific paper manuscript:
+          </p>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '2rem' }}>
+            {/* Figure 1: 5-Fold Cross-Validation */}
+            <div style={{ background: 'var(--bg-main)', borderRadius: '12px', padding: '1.25rem', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
+              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-cyan)', marginBottom: '0.5rem' }}>
+                Fig 1: 5-Fold Stratified Cross-Validation (97.68% ± 0.24%)
+              </div>
+              <img 
+                src="/kfold_cv_results.png" 
+                alt="5-Fold Cross Validation Results" 
+                style={{ maxWidth: '100%', maxHeight: '280px', borderRadius: '8px', objectFit: 'contain', background: '#ffffff', padding: '4px' }} 
+              />
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
+                Mean test accuracy across 13,994 multi-center MRI scans.
+              </div>
+            </div>
+
+            {/* Figure 2: Confusion Matrix */}
+            <div style={{ background: 'var(--bg-main)', borderRadius: '12px', padding: '1.25rem', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
+              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-teal)', marginBottom: '0.5rem' }}>
+                Fig 2: 5-Seed Ensemble Test Confusion Matrix (94.03%)
+              </div>
+              <img 
+                src="/confusion_matrix.png" 
+                alt="Test Set Confusion Matrix Heatmap" 
+                style={{ maxWidth: '100%', maxHeight: '280px', borderRadius: '8px', objectFit: 'contain', background: '#ffffff', padding: '4px' }} 
+              />
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
+                Evaluated on 1,994 held-out test scans (1,875 correct).
+              </div>
+            </div>
+          </div>
+
+          {/* Figure 3: Full Width Dual Explainable AI Heatmap Suite */}
+          <div style={{ marginTop: '2rem', background: 'var(--bg-main)', borderRadius: '12px', padding: '1.5rem', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
+            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-indigo)', marginBottom: '0.75rem' }}>
+              Fig 3: Dual-Branch Explainable AI (XAI) Across 4 Diagnostic Categories
+            </div>
+            <img 
+              src="/gradcam_results.png" 
+              alt="Multi-Scale Grad-CAM and ViT Attention Rollout Heatmaps" 
+              style={{ maxWidth: '100%', maxHeight: '460px', borderRadius: '8px', objectFit: 'contain', background: '#ffffff', padding: '6px' }} 
+            />
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.75rem', lineHeight: 1.5 }}>
+              Synchronized qualitative explanations showing Multi-Scale Grad-CAM ($0.65 L_4 + 0.35 L_3$) with cranial skull-stripping mask and ViT Patch Self-Attention.
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );
